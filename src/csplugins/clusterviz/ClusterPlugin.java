@@ -43,7 +43,6 @@ public class ClusterPlugin extends CytoscapePlugin {
         item.setToolTipText("Stop the plugin");
         item.addActionListener(new StopAction());
         submenu.add(item);
-
         submenu.addSeparator();
 
         //Help box
@@ -64,8 +63,7 @@ public class ClusterPlugin extends CytoscapePlugin {
     
     //Some interanal Classes
     /**
-     * Action to display the main panel where the scope(where to act the cluster
-     * action) is chosen and scoring and finding parameters are modified
+     * Action to display the main panel where some clustering parameters are to be modified
      */
     public class MainPanelAction implements ActionListener {
         boolean opened = false;
@@ -79,12 +77,12 @@ public class ClusterPlugin extends CytoscapePlugin {
         }
 
         /**
-         * This method is called when the user wants to start the cluster process.
+         * This method is called when the user wants to start the clustering process.
          *
-         * @param event the event that the very Menu Item:"start cluster" Selected.
+         * @param event the event that the very Menu Item:"Start" Selected.
          */
         public void actionPerformed(ActionEvent event) {
-            //display MCODEMainPanel in left cytopanel
+            //display MainPanel in left cytopanel
             CytoscapeDesktop desktop = Cytoscape.getDesktop();
             CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);//get the west cytopanel
 
@@ -94,7 +92,7 @@ public class ClusterPlugin extends CytoscapePlugin {
                 if (!vmm.getCalculatorCatalog().getVisualStyleNames().contains("Cluster")) {
                     vmm.getCalculatorCatalog().addVisualStyle(vistyle);
                 }
-                //The style is not actually applied until a result is produced (in MCODEScoreAndFindAction)
+                //The style is not actually applied until a result is produced (in AnalyzeAction)
                 mainPanel = new MainPanel(this, vistyle);
                 URL iconURL = ClusterPlugin.class.getResource("resources/logo.gif");
                 if (iconURL != null) {

@@ -74,7 +74,7 @@ public class ResultPanel extends JPanel {
         this.network = network;        
         this.imageList=imageList;
         networkView = Cytoscape.getNetworkView(network.getIdentifier());//the view may not exist
-        currentParamsCopy = ParameterSet.getInstance().getResultParams(resultTitle);
+        currentParamsCopy = ParameterSet.getInstance().getResultParams(resultTitle).copy();
         
         browserPanel = createBrowserPanel(this.imageList);
         JPanel bottomPanel = createBottomPanel();
@@ -629,7 +629,7 @@ public class ResultPanel extends JPanel {
             int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[]{message}, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
             if (result == JOptionPane.YES_OPTION) {
                 cytoPanel.remove(trigger);
-                ParameterSet.removeResultParams(getResultTitle());
+                ParameterSet.removeResultParams(trigger.getResultTitle());
             }
             if (cytoPanel.getCytoPanelComponentCount() == 0) {
                 cytoPanel.setState(CytoPanelState.HIDE);

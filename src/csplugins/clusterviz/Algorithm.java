@@ -34,6 +34,7 @@ public class Algorithm {
     private HashMap maximalCliquesNetworkMap=new HashMap();	//key is networkID, value is maximal Cliques
     private HashMap edgeWeightNetworkMap=new HashMap();
     private HashMap optimalDivisionKeyMap=new HashMap();
+    private int resultIndex;
     
     //data structure for storing information required for each node
     private class NodeInfo {
@@ -91,6 +92,13 @@ public class Algorithm {
     }    
     public long getFindCliquesTIme() {
 		return findCliquesTime;
+	}
+    
+	public int getResultIndex() {
+		return resultIndex;
+	}
+	public void setResultIndex(int resultIndex) {
+		this.resultIndex = resultIndex;
 	}
 	/**
      * FAG-EC Algorithm Step 1: 
@@ -273,7 +281,7 @@ public class Algorithm {
         	Cluster cluster=(Cluster)it.next();
         	if(cluster.getALNodes().size()>=params.getComplexSizeThreshold()){
         		ArrayList alNodes=cluster.getALNodes();
-        		GraphPerspective gpCluster =createGraphPerspective(alNodes, inputNetwork);
+        		GraphPerspective gpCluster =Algorithm.createGraphPerspective(alNodes, inputNetwork);
         		//cluster.setComplexID(counter++);
         		cluster.setGPCluster(gpCluster);
         		cluster.setClusterScore(0.0);
@@ -660,7 +668,7 @@ public class Algorithm {
         	Cluster cluster=(Cluster)it1.next();
         	if(cluster.getALNodes().size()>=params.getComplexSizeThreshold()){
         		ArrayList alNodes=cluster.getALNodes();
-        		GraphPerspective gpCluster =createGraphPerspective(alNodes, inputNetwork);
+        		GraphPerspective gpCluster =Algorithm.createGraphPerspective(alNodes, inputNetwork);
         		cluster.setGPCluster(gpCluster);
         		cluster.setClusterScore(0.0);
         		cluster.setSeedNode((Integer)alNodes.get(0));
@@ -824,7 +832,7 @@ public class Algorithm {
         	Cluster cluster=(Cluster)it.next();
         	if(cluster.getALNodes().size()>=params.getComplexSizeThreshold1()){
         		ArrayList alNodes=cluster.getALNodes();
-        		GraphPerspective gpCluster =createGraphPerspective(alNodes, inputNetwork);
+        		GraphPerspective gpCluster =Algorithm.createGraphPerspective(alNodes, inputNetwork);
         		cluster.setGPCluster(gpCluster);
         		cluster.setClusterScore(0.0);
         		cluster.setSeedNode((Integer)alNodes.get(0));
@@ -1108,7 +1116,7 @@ public class Algorithm {
                             alNodes.add(currentNode);
                         }
                         //create an input graph for the filter and haircut methods
-                        GraphPerspective gpCluster = createGraphPerspective(alNodes, inputNetwork);
+                        GraphPerspective gpCluster = Algorithm.createGraphPerspective(alNodes, inputNetwork);
                         if (!filterCluster(gpCluster)) {//only do this when the cluster need not filter
                             if (params.isHaircut()) {
                                 haircutCluster(gpCluster, alNodes, inputNetwork);
@@ -1117,7 +1125,7 @@ public class Algorithm {
                                 fluffClusterBoundary(alNodes, nodeSeenHashMap, nodeInfoHashMap);
                             }
                             currentCluster.setALNodes(alNodes);;
-                            gpCluster = createGraphPerspective(alNodes, inputNetwork);
+                            gpCluster = Algorithm.createGraphPerspective(alNodes, inputNetwork);
                             currentCluster.setGPCluster(gpCluster);
                             currentCluster.setClusterScore(scoreCluster(currentCluster));
 //                          //store all the nodes that have already been seen and incorporated in other clusters
@@ -1458,7 +1466,7 @@ public class Algorithm {
      * @param inputNetwork the original network
      * @return the graph perspective created
      */
-    private GraphPerspective createGraphPerspective(ArrayList alNode, CyNetwork inputNetwork) {
+    public static GraphPerspective createGraphPerspective(ArrayList alNode, CyNetwork inputNetwork) {
         //convert Integer array to int array
         int[] clusterArray = new int[alNode.size()];
         for (int i = 0; i < alNode.size(); i++) {
@@ -1750,7 +1758,7 @@ public class Algorithm {
      */
     public Cluster exploreCluster(Cluster cluster, double nodeScoreCutoff, CyNetwork inputNetwork, String resultTitle) {
         HashMap nodeInfoHashMap = (HashMap) nodeInfoResultsMap.get(resultTitle);
-        ParameterSet params = ParameterSet.getInstance().getResultParams(cluster.getResultTitle());
+        ParameterSet params = ParameterSet.getInstance().getResultParams(cluster.getResultTitle()).copy();
         HashMap nodeSeenHashMap;
         if (nodeScoreCutoff <= params.getNodeScoreCutoff()) {
             nodeSeenHashMap = new HashMap(cluster.getNodeSeenHashMap());
@@ -1761,13 +1769,13 @@ public class Algorithm {
         if (!alNodes.contains(seedNode))//make sure seed node is part of cluster, if not already in there
             alNodes.add(seedNode);
         //create an input graph for the filter and haircut methods
-        GraphPerspective gpCluster = createGraphPerspective(alNodes, inputNetwork);
+        GraphPerspective gpCluster = Algorithm.createGraphPerspective(alNodes, inputNetwork);
         if (params.isHaircut())
             haircutCluster(gpCluster, alNodes, inputNetwork);
         if (params.isFluff())
             fluffClusterBoundary(alNodes, nodeSeenHashMap, nodeInfoHashMap);
         cluster.setALNodes(alNodes);
-        gpCluster = createGraphPerspective(alNodes, inputNetwork);
+        gpCluster = Algorithm.createGraphPerspective(alNodes, inputNetwork);
         cluster.setGPCluster(gpCluster);
         cluster.setClusterScore(scoreCluster(cluster));
         return cluster;
