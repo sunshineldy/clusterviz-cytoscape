@@ -65,7 +65,6 @@ public class MainPanel extends JPanel {
         this.vistyle = vistyle;
         setLayout(new BorderLayout());
         currentParameters = ParameterSet.getInstance().getParamsCopy(null);
-        currentParameters.setDefaultParams();
         decimal = new DecimalFormat();
         decimal.setParseIntegerOnly(true);
         
@@ -761,7 +760,7 @@ public class MainPanel extends JPanel {
                     this.component = (ResultPanel) component;
                     componentTitle = this.component.getResultTitle();
                     String message = "Close" + componentTitle + ".\nContiune?";
-                    int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[] {message}, "È·¶¨", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                    int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[] {message}, "Comfirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
                     if (result == JOptionPane.YES_OPTION){
                         cytoPanel.remove(component);
                         ParameterSet.removeResultParams(componentTitle);
