@@ -177,12 +177,6 @@ public class ClusterPlugin extends CytoscapePlugin {
             cytoPanel = desktop.getCytoPanel(SwingConstants.WEST);
             cytoPanel.remove(mainPanel);
             mainPanel.getTrigger().setOpened(false);
-            /*String message = "Do you want to exit Cytoscape?";
-            int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[] {message}, "Confirm", 
-            		JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-            if (result == JOptionPane.YES_OPTION){
-            	desktop.dispose();
-            }*/
         }
     } 
     
@@ -231,12 +225,12 @@ public class ClusterPlugin extends CytoscapePlugin {
             }
 
             editorPane.setText(        
-                    "<html><body>"+logoCode+"<P align=center><b>ClusterViz (April 2009) </b><BR>" +
+                    "<html><body>"+logoCode+"<P align=center><b>ClusterViz 1.1(November 2009) </b><BR>" +
                     "<i>An hierarchical clustering method for finding molecular complexes</i><BR>" +
                     "ClusterViz finds clusters (highly interconnected regions, protein complexes)<BR>" +
                     "in large protein interaction networks<BR>" +
                     "using maximal clique-based hierarchical algomerative clustering algorithm.<BR><BR>"+
-                    "<a href='http://hi.baidu.com/cjry%5F8854/blog/item/1bf16f1e9db0b3fc1bd57683.html'>For references, view my blog^-^</a><BR><BR>"+
+                    "<a href='http://code.google.com/p/clusterviz-cytoscape/'>For references, view the project home page.^-^</a><BR><BR>"+
                     "</P></body></html>");
             setContentPane(editorPane);
         }

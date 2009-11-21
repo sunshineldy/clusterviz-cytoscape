@@ -1,8 +1,8 @@
 package csplugins.clusterviz;
 
 import java.util.HashMap;
-import java.util.TreeMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import cytoscape.Cytoscape;
 
@@ -13,11 +13,12 @@ public class ParameterSet {
     private static ParameterSet ourInstance = new ParameterSet();
     private static HashMap currentParams = new HashMap();
     private static HashMap resultParams = new HashMap();
-    private static HashMap allParamSets=new HashMap();
+    //private static HashMap allParamSets=new HashMap();
     //public static HashMap paramsResult= new HashMap();
     
     //parameters
     public String networkID;
+    public String resultTitle;
     //scope
     public static String NETWORK = "network";
     public static String SELECTION = "selection";
@@ -116,10 +117,6 @@ public class ParameterSet {
     public static ParameterSet getInstance() {
         return ourInstance;
     }
-    
-    public HashMap getAllParamSets(){
-    	return allParamSets;
-    }
     /**
      * Get a copy of the current parameters for a particular network. 
      * usage:
@@ -133,25 +130,22 @@ public class ParameterSet {
             return newParams.copy();
         }
     }
+    
+    public HashMap getAllParamSets(){
+    	return resultParams;
+    }
+    
     public ParameterSet getResultParams(String resultSet) {
         return ((ParameterSet) resultParams.get(resultSet));
     }
-    public String getParamsResult(ParameterSet params) {
-        return (String)paramsResult.get(params);
-    }
+    
     public static void removeResultParams(String resultTitle) {
-        ParameterSet params=ParameterSet.getInstance().getResultParams(resultTitle);
-        ArrayList alParas=(ArrayList)allParamSets.get(params.getNetworkID());
-        System.out.print("Net: "+params.getNetworkID()+"\t");
-        System.out.println("////Removed???"+alParas.remove(params));
-        if(alParas.size()==0)	allParamSets.remove(params.getNetworkID());
         resultParams.remove(resultTitle);
-        System.out.println("length:"+allParamSets.size());
     } 
     /**
      * Current parameters can only be updated using this method.
      */
-    public void setParams(ParameterSet newParams, String resultTitle, String networkID) {
+    public ParameterSet setParams(ParameterSet newParams, String resultTitle, String networkID) {
         //cannot simply equate the params and newParams classes since that creates a permanent reference
         //and prevents us from keeping 2 sets of the class such that the saved version is not altered
         //until this method is called
@@ -202,14 +196,7 @@ public class ParameterSet {
                 newParams.isOverlapped()
         );
         resultParams.put(resultTitle, resultParamSet);
-        if(!allParamSets.containsKey(networkID)){
-        	ArrayList list=new ArrayList();
-        	list.add(resultParamSet);
-        	allParamSets.put(networkID, list);
-        }
-        else
-        	((ArrayList)allParamSets.get(networkID)).add(resultParamSet);
-        paramsResult.put(resultParamSet, resultTitle);
+        return resultParamSet;
     }
     /**
      * Method for setting all parameters to their default values
@@ -316,6 +303,42 @@ public class ParameterSet {
         //results dialog box
         newParam.setDefaultRowHeight(this.defaultRowHeight);
         return newParam;
+    }
+		
+	/**
+     * Generates a summary of the parameters. Only parameters that are necessary are included.
+     * For example, if fluff is not turned on, the fluff density cutoff will not be included.
+     * 
+     * @return Buffered string summarizing the parameters
+     */
+	
+    public String toString() {
+        String lineSep = System.getProperty("line.separator");
+        StringBuffer sb = new StringBuffer();
+    	sb.append("   Network: "+networkID);
+        if(algorithm.equals(MCODE)){
+        	sb.append("   Algorithm:  MCODE"+lineSep);
+            sb.append("   Scoring:" + lineSep
+                    + "      IncludeLoop: " + includeLoops + "  DegreeThreshold: " + degreeThreshold + lineSep);
+            sb.append("   Clustering:" + lineSep
+                    + "      NodeScoreThreshold: " + nodeScoreThreshold + "  Haircut: " + haircut +lineSep
+                    + "      Fluff: " + fluff + ((fluff) ? ("  FluffNodeDensityThreshold " + nodeDensityThreshold) : "")+lineSep
+                    + "      K-Core: " + kCore + "  Max.DepthFromSeed: " + maxDepthFromStart + lineSep);
+        }
+        else if(algorithm.equals(FAGEC)){
+        	sb.append("   Algorithm:  FAG-EC"+lineSep);
+            sb.append("   Clustering:" + lineSep
+                    + "      DefinitionWay: " + ((isWeak)? ("Weak  In/OutThreshold: "+fThreshold ):"Strong") + lineSep
+                    + "      Overlapped: " + overlapped + ((overlapped)? (" CliqueSizeThreshold: "+cliqueSizeThreshold ):"")+lineSep
+                    + "      OutputThreshold: " + complexSizeThreshold + lineSep);        	
+        }
+        else if(algorithm.equals(EAGLE)){
+        	sb.append("   Algorithm:  EAGLE"+lineSep);
+            sb.append("   Clustering:" + lineSep
+                    + "      CliqueSizeThrshold: " + cliqueSizeThreshold1 
+                    + "  OutputThreshold: " + complexSizeThreshold1 + lineSep);
+        }
+        return sb.toString();
     }
 
     //parameter getting and setting	
@@ -485,197 +508,14 @@ public class ParameterSet {
 	public void setOverlapped(boolean overlapped) {
 		this.overlapped = overlapped;
 	}	
-	
-	/**
-	 * check the values of the input parameters so as to take corresponding action
-	 * @param params The set of input parameters
-	 * @return the code of action to be taken
-	 */
-	public static int checkParams(AnalyzeAction caller, ParameterSet curParams){
-		int analyze=-1;
-		String interruptedMessage="";
-        ArrayList alParaSets;
-    	ParameterSet curParaSet;
-
-		if (curParams.getScope().equals(SELECTION) && curParams.getSelectedNodes().length < 1) {
-            analyze = AnalyzeAction.INTERRUPTED;
-            interruptedMessage= "At least one nodes should be selected£¡";
-        }else{
-        	String which=curParams.getAlgorithm();      
-        	if(which.length()==0){	//if no algorithm is selected
-        		analyze=AnalyzeAction.INTERRUPTED;
-        		interruptedMessage="An algorithm need to be selected for clustering£¡";
-        	}else{
-        		//Here we determine if we have already run clustering on this network before
-        		if (!allParamSets.containsKey(curParams.getNetworkID())){
-        			System.out.println("^^^^^^^^A new Network:\t"+curParams.getNetworkID());
-        			if(which.equals(FAGEC)){
-        				if (curParams.isOverlapped())	analyze = AnalyzeAction.FINDCLIQUE;
-        				else	analyze=AnalyzeAction.FIND;
-        			}else{
-        				if(which.equals(EAGLE))	analyze=AnalyzeAction.CLIQUEBASED;
-        				else analyze = AnalyzeAction.RESCORE;
-        			}
-        		}
-        		else{	//this network has been analyze before
-        			//get list of copys of the saved parameters for comparison with the current ones
-        			alParaSets = (ArrayList)ParameterSet.getInstance().getAllParamSets().get(curParams.getNetworkID());
-        			
-        			Iterator it=alParaSets.iterator();
-        			while(it.hasNext()){
-        				curParaSet=(ParameterSet)it.next();
-        				if(checkEqual(curParams,curParaSet)){	//exists
-        					analyze=AnalyzeAction.EXISTS;
-        					System.out.println("---------Existes-------------");
-            				interruptedMessage="The result exits£¡";
-            				break;
-        				}
-        			}
-        			if(analyze!=AnalyzeAction.EXISTS)
-        				analyze=compare(curParams,
-        						ParameterSet.getInstance().getParamsCopy(curParams.getNetworkID()));
-        		}
-        	}
-        }
-        caller.setInterruptedMessage(interruptedMessage);
-		return analyze;
+		
+    public String getResultTitle() {
+		return resultTitle;
 	}
-	private static boolean checkEqual(ParameterSet PSa, ParameterSet PSb){
-		if(!PSa.getAlgorithm().equals(PSb.getAlgorithm()))
-			return false;
-		else{
-			if(PSa.getAlgorithm().equals(FAGEC)){
-	        	if (PSa.getScope().equals(PSb.getScope())&&
-	        			PSa.isWeak() == PSb.isWeak() &&
-	        			PSa.getFThreshold() == PSb.getFThreshold() &&
-	        			PSa.getComplexSizeThreshold()==PSb.getComplexSizeThreshold()&&
-	        			PSa.isOverlapped() == PSb.isOverlapped()&&
-	        			PSa.getCliqueSizeThreshold() == PSb.getCliqueSizeThreshold()
-	        			 ) {
-	        		if( (PSa.getScope().equals(ParameterSet.NETWORK) ||
-	        				(PSa.getScope().equals(ParameterSet.SELECTION) &&
-	        				PSa.getSelectedNodes() == PSb.getSelectedNodes())))
-	        			return true;
-	        	}				
-			}else {
-				if(PSa.getAlgorithm().equals(MCODE)){
-            	if ( PSa.isIncludeLoops() == PSb.isIncludeLoops() &&
-            			PSa.getDegreeThreshold() == PSb.getDegreeThreshold() &&
-            			PSa.getScope().equals(PSb.getScope()) &&
-            			(!PSa.getScope().equals(ParameterSet.NETWORK) &&
-            					PSa.getSelectedNodes() == PSb.getSelectedNodes()) &&
-            			((PSa.getKCore() == PSb.getKCore() &&
-            					PSa.getMaxDepthFromStart() == PSb.getMaxDepthFromStart() &&
-            					PSa.isHaircut() == PSb.isHaircut() &&
-            					PSa.getNodeScoreCutoff() != PSb.getNodeScoreCutoff() &&
-            					PSa.isFluff() == PSb.isFluff() &&
-            					(PSa.isFluff() &&
-            							PSa.getFluffNodeDensityCutoff() == PSb.getFluffNodeDensityCutoff())))
-            							)
-            		return true;
-				}
-				else{
-					if (PSa.getCliqueSizeThreshold1()== PSb.getCliqueSizeThreshold1()&&
-							PSa.getComplexSizeThreshold1()==PSb.getComplexSizeThreshold1())
-						return true;
-				}
-			}
-		}
-		return false;
+	public void setResultTitle(String resultTitle) {
+		this.resultTitle = resultTitle;
 	}
-	protected static int compare(ParameterSet curParams, ParameterSet savedParamsCopy){
-		int analyze=-1;
-		String which=curParams.getAlgorithm();
-    	if(which.equals(ParameterSet.MCODE)){
-        	if ( savedParamsCopy.getAlgorithm()!=ParameterSet.MCODE ||
-        			curParams.isIncludeLoops() != savedParamsCopy.isIncludeLoops() ||
-        			curParams.getDegreeThreshold() != savedParamsCopy.getDegreeThreshold()) {
-        		analyze =AnalyzeAction. RESCORE;
-        	} 
-        	else{ if (!curParams.getScope().equals(savedParamsCopy.getScope()) ||
-        			(!curParams.getScope().equals(ParameterSet.NETWORK) &&
-        					curParams.getSelectedNodes() != savedParamsCopy.getSelectedNodes()) ||
-        			curParams.isOptimize() != savedParamsCopy.isOptimize() ||
-        			(!curParams.isOptimize() &&
-        					(curParams.getKCore() != savedParamsCopy.getKCore() ||
-                            curParams.getMaxDepthFromStart() != savedParamsCopy.getMaxDepthFromStart() ||
-                            curParams.isHaircut() != savedParamsCopy.isHaircut() ||
-                            curParams.getNodeScoreCutoff() != savedParamsCopy.getNodeScoreCutoff() ||
-                            curParams.isFluff() != savedParamsCopy.isFluff() ||
-                            (curParams.isFluff() &&
-                            curParams.getFluffNodeDensityCutoff() != savedParamsCopy.getFluffNodeDensityCutoff())))) {
-        		analyze = AnalyzeAction.REFIND;
-        		}else    analyze = AnalyzeAction.INTERRUPTED;
-        	}
-    	}
-    	else{  
-    		if(which.equals(ParameterSet.EAGLE)){
-    			if (!savedParamsCopy.getAlgorithm().equals(ParameterSet.EAGLE) ||
-    				curParams.getCliqueSizeThreshold1()!= savedParamsCopy.getCliqueSizeThreshold1() ||
-        				curParams.getComplexSizeThreshold1()!=savedParamsCopy.getComplexSizeThreshold1())
-        			analyze=AnalyzeAction.CLIQUEBASED;
-        		else    analyze = AnalyzeAction.INTERRUPTED;
-    		}
-    		else{ 
-    			if(which.equals(ParameterSet.FAGEC)){
-        			if (savedParamsCopy.getAlgorithm().equals(ParameterSet.FAGEC) &&
-        					curParams.getScope().equals(savedParamsCopy.getScope())&&
-        					curParams.isWeak() == savedParamsCopy.isWeak() &&
-        					curParams.getFThreshold() == savedParamsCopy.getFThreshold() &&
-        					curParams.getComplexSizeThreshold()==savedParamsCopy.getComplexSizeThreshold()&&
-        					curParams.isOverlapped() == savedParamsCopy.isOverlapped()&&
-        					curParams.getCliqueSizeThreshold() == savedParamsCopy.getCliqueSizeThreshold()
-        					) {
-        				if( (curParams.getScope().equals(ParameterSet.SELECTION) &&
-        						curParams.getSelectedNodes() == savedParamsCopy.getSelectedNodes())||
-        						curParams.getScope().equals(ParameterSet.NETWORK))
-        					analyze = AnalyzeAction.INTERRUPTED;
-        			}
-        			else{ 
-        				if (curParams.isOverlapped())	analyze = AnalyzeAction.FINDCLIQUE;
-        				else	analyze=AnalyzeAction.FIND;
-        			}
-    			}
-    		}
-    	}
-    	return analyze;
-	}
-	/**
-     * Generates a summary of the parameters. Only parameters that are necessary are included.
-     * For example, if fluff is not turned on, the fluff density cutoff will not be included.
-     * 
-     * @return Buffered string summarizing the parameters
-     */
-	
-    public String toString() {
-        String lineSep = System.getProperty("line.separator");
-        StringBuffer sb = new StringBuffer();
-    	sb.append("   Network: "+networkID);
-        if(algorithm.equals(MCODE)){
-        	sb.append("   Algorithm:  MCODE"+lineSep);
-            sb.append("   Scoring:" + lineSep
-                    + "      IncludeLoop: " + includeLoops + "  DegreeThreshold: " + degreeThreshold + lineSep);
-            sb.append("   Clustering:" + lineSep
-                    + "      NodeScoreThreshold: " + nodeScoreThreshold + "  Haircut: " + haircut +lineSep
-                    + "      Fluff: " + fluff + ((fluff) ? ("  FluffNodeDensityThreshold " + nodeDensityThreshold) : "")+lineSep
-                    + "      K-Core: " + kCore + "  Max.DepthFromSeed: " + maxDepthFromStart + lineSep);
-        }
-        else if(algorithm.equals(FAGEC)){
-        	sb.append("   Algorithm:  FAG-EC"+lineSep);
-            sb.append("   Clustering:" + lineSep
-                    + "      DefinitionWay: " + ((isWeak)? ("Weak  In/OutThreshold: "+fThreshold ):"Strong") + lineSep
-                    + "      Overlapped: " + overlapped + ((overlapped)? (" CliqueSizeThreshold: "+cliqueSizeThreshold ):"")+lineSep
-                    + "      OutputThreshold: " + complexSizeThreshold + lineSep);        	
-        }
-        else if(algorithm.equals(EAGLE)){
-        	sb.append("   Algorithm:  EAGLE"+lineSep);
-            sb.append("   Clustering:" + lineSep
-                    + "      CliqueSizeThrshold: " + cliqueSizeThreshold1 
-                    + "  OutputThreshold: " + complexSizeThreshold1 + lineSep);
-        }
-        return sb.toString();
-    }
-    public static void main(String[] args){
+	public static void main(String[] args){
     	ClusterPlugin cp=new ClusterPlugin(); 
     	cp.test();
     }/**/

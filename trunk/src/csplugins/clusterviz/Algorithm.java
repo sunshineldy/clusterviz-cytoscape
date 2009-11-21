@@ -34,7 +34,6 @@ public class Algorithm {
     private HashMap maximalCliquesNetworkMap=new HashMap();	//key is networkID, value is maximal Cliques
     private HashMap edgeWeightNetworkMap=new HashMap();
     private HashMap optimalDivisionKeyMap=new HashMap();
-    private int resultIndex;
     
     //data structure for storing information required for each node
     private class NodeInfo {
@@ -94,12 +93,6 @@ public class Algorithm {
 		return findCliquesTime;
 	}
     
-	public int getResultIndex() {
-		return resultIndex;
-	}
-	public void setResultIndex(int resultIndex) {
-		this.resultIndex = resultIndex;
-	}
 	/**
      * FAG-EC Algorithm Step 1: 
      * Calculate arc weights which is defined as 

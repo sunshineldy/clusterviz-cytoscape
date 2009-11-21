@@ -7,7 +7,8 @@ ClusterViz is a Cytoscape plug-in for analysis and visualization of clusters fro
 network. Based on another Cytoscape plug-in named MCODE, three different graph
 clustering algorithms (IPCA, EAGLE and MCODE) were implemented in ClusterViz.
 This plug-in is developed by Juan Cai and Gang Chen, and supported by Prof.
-Jianxin Wang and Dr. Min Li, from Central South University.
+Jianxin Wang and Dr. Min Li, from Central South University.This project is supported
+by graduate student creative funding of HuNan, China, NO. CX2009B040.
 
 2. Quick Start
 Following is a short quick start for the usage of ClusterViz, detailed
