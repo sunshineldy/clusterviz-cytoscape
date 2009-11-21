@@ -18,6 +18,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class AnalyzeAction implements ActionListener {
     ParameterSet curParams;
     ClusterVisualStyle vistyle;
     private String interruptedMessage="";
+    private int resultIndex;
     
     AnalyzeAction () {}
     AnalyzeAction (ParameterSet curParams, ClusterVisualStyle vistyle) {
@@ -50,16 +52,14 @@ public class AnalyzeAction implements ActionListener {
         this.vistyle = vistyle;
         networkManager = new HashMap();
     }
-    
-	public void setInterruptedMessage(String interruptedMessage) {
-		this.interruptedMessage = interruptedMessage;
-	}
 	/**
      * This method is called when the user clicks Analyze.
      *
      * @param event Click of the analyzeButton on the MainPanel.
      */
     public void actionPerformed(ActionEvent event) {
+        resultFound = false;
+        ParameterSet resultParaSet=null;
         //get the network object, this contains the graph
         final CyNetwork network = Cytoscape.getCurrentNetwork();
         curParams.setNetworkID(network.getIdentifier());
@@ -84,24 +84,24 @@ public class AnalyzeAction implements ActionListener {
         curParams.setSelectedNodes(selectedNodesRGI);
 
         Algorithm alg;
-        String halfResultTitle = "Result ";   
+        boolean newNet=false;
+        String halfResultTitle = "Result ";
         if (!networkManager.containsKey(network.getIdentifier())){
+        	newNet=true;
             alg = new Algorithm(null);
             networkManager.put(network.getIdentifier(), alg);
         }
         else alg = (Algorithm) networkManager.get(network.getIdentifier());
-        resultFound = false;
-
         //check the validation the input parameters
-        analyze=ParameterSet.checkParams(this, curParams);        
-        if(analyze == EXISTS)
-        	interruptedMessage="Te result exists";
+        analyze=checkParams(curParams, newNet); 
+        
         if (analyze == INTERRUPTED || analyze == EXISTS)
-            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), interruptedMessage, "Interrupted", JOptionPane.WARNING_MESSAGE);
-        else {
+            JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+            		interruptedMessage, "Interrupted", JOptionPane.WARNING_MESSAGE);
+        else{            
             //update the parameter set with this result title
-        	System.out.println("\nUpdate the parameter set with this result title:  "+network.getIdentifier()+"\t"+(resultCounter + 1));
-            ParameterSet.getInstance().setParams(curParams, halfResultTitle + (resultCounter + 1), network.getIdentifier());
+        	resultParaSet=ParameterSet.getInstance().setParams(curParams, halfResultTitle + (resultCounter + 1), 
+            		network.getIdentifier());
         	AnalyzeTask task = new AnalyzeTask(network, analyze, halfResultTitle + (resultCounter + 1),
         			alg, curParams.getAlgorithm(),curParams);
             JTaskConfig config = new JTaskConfig();
@@ -110,7 +110,6 @@ public class AnalyzeAction implements ActionListener {
             //Execute Task via TaskManager
             //This automatically pops-open a JTask Dialog Box
             TaskManager.executeTask(task, config);
-
             if (task.isCompletedSuccessfully()) {
                 if (task.getComplexes().length > 0) {
                     resultFound = true;
@@ -152,19 +151,15 @@ public class AnalyzeAction implements ActionListener {
             } else {
                 cytoPanel.add(resultTitle, resultPanel);
             }
-            int index = cytoPanel.indexOfComponent(resultPanel);
-            alg.setResultIndex(index);
-            System.out.println("\tIndex restored:"+index);
+            resultParaSet.setResultTitle(resultTitle);
         }
         //Ensures that the east cytopanel is not loaded if there are no results in it
         if (resultFound || analyze == EXISTS || (analyze == INTERRUPTED && cytoPanel.indexOfComponent(resultPanel) >= 0)) {
             //focus the result panel
-        	String title=ParameterSet.getInstance().getParamsResult(curParams);
-        	System.out.print("Result Title:"+title);
-            int index = cytoPanel.indexOfComponent(title);
-            index=alg.getResultIndex();
-            System.out.println("\tIndex to be selected:  "+index);
-            cytoPanel.setSelectedIndex(index);
+            if(resultFound)
+            	resultIndex = cytoPanel.indexOfComponent(resultPanel);
+            System.err.println("-----------ResultPanel:"+resultIndex);
+            cytoPanel.setSelectedIndex(resultIndex);
             cytoPanel.setState(CytoPanelState.DOCK);
 
             //make sure that the visual style is applied whenever new results are produced
@@ -174,6 +169,106 @@ public class AnalyzeAction implements ActionListener {
             vmm.applyAppearances();
         }
     }
+    
+
+	/**
+	 * check the values of the input parameters so as to take corresponding action
+	 * @param params The set of input parameters
+	 * @return the code of action to be taken
+	 */
+	private int checkParams(ParameterSet curParams, boolean newNet){
+		int analyze=-1;
+
+		if (curParams.getScope().equals(ParameterSet.SELECTION) && curParams.getSelectedNodes().length < 1) {
+            analyze = INTERRUPTED;
+            interruptedMessage= "At least one nodes should be selected£¡";
+        }else{
+        	String which=curParams.getAlgorithm();      
+        	if(which.length()==0){	//if no algorithm is selected
+        		analyze=INTERRUPTED;
+        		interruptedMessage="An algorithm need to be selected for clustering£¡";
+        	}else{
+        		if(!newNet){
+        			//get list of copys of the saved parameters for comparison with the current ones
+            		Collection clParaSets=ParameterSet.getInstance().getAllParamSets().values();
+        			Iterator it=clParaSets.iterator();
+    		    	ParameterSet curParaSet;
+        			while(it.hasNext()){
+        				curParaSet=(ParameterSet)it.next();
+        				if(checkEqual(curParams,curParaSet)){	//exists
+        					CytoPanel panel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
+        					resultIndex=panel.indexOfComponent(curParaSet.getResultTitle());
+        					analyze=EXISTS;
+            				interruptedMessage="The result exits£¡";
+            				break;
+        				}
+        			}
+    			}
+    			if(newNet || analyze != EXISTS){
+        	    	if(which.equals(ParameterSet.MCODE)){
+        	    		if(!newNet){
+                			ParameterSet savedParamsCopy=ParameterSet.getInstance().getParamsCopy(curParams.getNetworkID());
+            	        	if ( savedParamsCopy.getAlgorithm()!=ParameterSet.MCODE ||
+            	        			curParams.isIncludeLoops() != savedParamsCopy.isIncludeLoops() ||
+            	        			curParams.getDegreeThreshold() != savedParamsCopy.getDegreeThreshold())
+            	        		analyze = RESCORE;
+            	        	else	analyze = REFIND;
+        	    		}
+        	    		else    analyze = RESCORE;
+        	    	}
+        	    	else{
+        	    		if(which.equals(ParameterSet.EAGLE))
+    	        			analyze = CLIQUEBASED;
+        	    		else
+            				if (curParams.isOverlapped())	analyze = FINDCLIQUE;
+            				else	analyze = FIND;
+        	    	}
+    			}
+        	}
+        }
+		return analyze;
+	}
+	//check if two sets of Parameter are equal or not 
+	private static boolean checkEqual(ParameterSet PSa, ParameterSet PSb){
+		if(!PSa.getNetworkID().equals(PSb.getNetworkID()) ||
+				!PSa.getAlgorithm().equals(PSb.getAlgorithm()))
+			return false;
+		if(!PSa.getScope().equals(PSb.getScope()) || 
+				(PSa.getScope().equals(ParameterSet.SELECTION) &&
+						PSa.getSelectedNodes() != PSb.getSelectedNodes()))
+			return false;
+		else{
+			if(PSa.getAlgorithm().equals(ParameterSet.FAGEC)){
+	        	if (PSa.isWeak() == PSb.isWeak() &&	        			
+	        			PSa.getFThreshold() == PSb.getFThreshold() &&
+	        			PSa.getComplexSizeThreshold()==PSb.getComplexSizeThreshold()&&
+	        			PSa.isOverlapped() == PSb.isOverlapped()&&
+	        			PSa.getCliqueSizeThreshold() == PSb.getCliqueSizeThreshold()
+	        			 ) 
+	        		return true;
+			}else {
+				if(PSa.getAlgorithm().equals(ParameterSet.MCODE)){
+	            	if ( PSa.isIncludeLoops() == PSb.isIncludeLoops() &&
+	            			PSa.getDegreeThreshold() == PSb.getDegreeThreshold() &&
+	            			PSa.getKCore() == PSb.getKCore() &&
+	            			PSa.isHaircut() == PSb.isHaircut() &&
+	            			PSa.getNodeScoreCutoff() == PSb.getNodeScoreCutoff() &&
+	            			PSa.getMaxDepthFromStart() == PSb.getMaxDepthFromStart() &&
+	            			PSa.isFluff() == PSb.isFluff() &&
+	            			(!PSa.isFluff() || (PSa.isFluff() && 
+	            					PSa.getFluffNodeDensityCutoff() == PSb.getFluffNodeDensityCutoff())))
+	            		return true;
+				}
+				else{	//EAGLE
+					if (PSa.getCliqueSizeThreshold1()== PSb.getCliqueSizeThreshold1()&&
+							PSa.getComplexSizeThreshold1()==PSb.getComplexSizeThreshold1())
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+    
     /**
      * Score the network and find clusters.
      */
@@ -212,12 +307,12 @@ public class AnalyzeAction implements ActionListener {
             if (taskMonitor == null) {
                 throw new IllegalStateException("The Task Monitor has not been set.");
             }
-            int imageSize = ParameterSet.getInstance().getResultParams(resultTitle).getDefaultRowHeight();
+            int imageSize = 80;
             if(which.equals(ParameterSet.MCODE)){
             try {
                 alg.setTaskMonitor(taskMonitor, network.getIdentifier());
                 //only (re)score the graph if the scoring parameters have been changed
-                if (analyze == AnalyzeAction.RESCORE) {
+                if (analyze == RESCORE) {
                     taskMonitor.setPercentCompleted(0);
                     taskMonitor.setStatus("Step 1 of 3:Scoring the Network...");
                     System.out.println("Step 1 of 3:Scoring the Network...");
@@ -281,7 +376,7 @@ public class AnalyzeAction implements ActionListener {
             else if(which.equals(ParameterSet.FAGEC)){
                 try {
                     alg.setTaskMonitor(taskMonitor, network.getIdentifier());
-                    if (analyze == AnalyzeAction.FINDCLIQUE) {
+                    if (analyze == FINDCLIQUE) {
                         taskMonitor.setPercentCompleted(0);
                         taskMonitor.setStatus("Step 1 of 3:Calculate all the maximal Clique...");
                         alg.getMaximalCliques(network, resultTitle);
