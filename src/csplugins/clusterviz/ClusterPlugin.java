@@ -181,11 +181,11 @@ public class ClusterPlugin extends CytoscapePlugin {
     } 
     
     /**
-     * Opens a browser connect to my blog page.
+     * Opens a browser connect to the project home page.
      */
     private class HelpAction implements ActionListener {
         public void actionPerformed(ActionEvent actionEvent) {
-            cytoscape.util.OpenBrowser.openURL("http://hi.baidu.com/cjry%5F8854/blog/item/1bf16f1e9db0b3fc1bd57683.html");
+            cytoscape.util.OpenBrowser.openURL("http://code.google.com/p/clusterviz-cytoscape/");
         }
     }    
     /**
@@ -246,9 +246,4 @@ public class ClusterPlugin extends CytoscapePlugin {
             }
         }
     }
-    public void test(){  }
-    public static void main(String[] args){
-    	ClusterPlugin cp=new ClusterPlugin(); 
-    	cp.test();
-    }/**/
 }

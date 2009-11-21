@@ -13,8 +13,6 @@ public class ParameterSet {
     private static ParameterSet ourInstance = new ParameterSet();
     private static HashMap currentParams = new HashMap();
     private static HashMap resultParams = new HashMap();
-    //private static HashMap allParamSets=new HashMap();
-    //public static HashMap paramsResult= new HashMap();
     
     //parameters
     public String networkID;
@@ -515,8 +513,4 @@ public class ParameterSet {
 	public void setResultTitle(String resultTitle) {
 		this.resultTitle = resultTitle;
 	}
-	public static void main(String[] args){
-    	ClusterPlugin cp=new ClusterPlugin(); 
-    	cp.test();
-    }/**/
 }

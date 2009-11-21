@@ -464,8 +464,4 @@ public class AnalyzeAction implements ActionListener {
             return alg;
         }
     }
-    public static void main(String[] args){
-    	ClusterPlugin cp=new ClusterPlugin(); 
-    	cp.test();
-    }/**/
 }
