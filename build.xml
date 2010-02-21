@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build.xml - Build file for ClusterViz -->
-<project name="ClusterViz" default="jar" basedir="D:/Program Files/ClusterViz">
+<project name="ClusterViz" default="jar" basedir=".">
 
 	<!-- Name of the PlugIn -->
 	<!-- Change this to the name of your PlugIn -->
@@ -11,7 +11,7 @@
   	<!-- The directory containing source code -->
   	<property name="src.dir" value="src"/>
   	<property name="resources.dir" value="resources"/>
-	<property name="cytoscape.dir" value="D:/Program Files/Cytoscape_v2.6.3"/>
+	<property name="cytoscape.dir" value="/bioinfo/gang/programs/Cytoscape_2.6.3/"/>
 
     <!--  The directory containing library jar files -->
 	<property name="lib.dir" value="${cytoscape.dir}/lib"/>
@@ -48,7 +48,7 @@
 
 	<!--  Target to compile all PlugIn Code -->
   	<target name="compile" depends="prepare"
-		description="Compiles all PlugIn source code (Note: Expects to run from csplugins/clusterviz directory).">
+		description="Compiles iall PlugIn source code (Note: Expects to run from csplugins/clusterviz directory).">
     		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" source="1.4">
 			<include name="csplugins/**"/>
             <classpath refid="classpath"/>
