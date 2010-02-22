@@ -61,7 +61,7 @@ public class Algorithm {
 		}
 		public void setAlComplex(ArrayList alComplex) {
 			this.alComplex = alComplex;
-		}
+ 		}
     }
      
     /**

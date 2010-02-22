@@ -28,10 +28,10 @@ projectURL=http://code.google.com/p/clusterviz-cytoscape/
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsInstitutions=Juan Cai, Min Li, Jianxin Wang and Gang Chen:Central South University, China
+pluginAuthorsInstitutions=Juan Cai, Gang Chen and Jianxin Wang:Central South University, China
 
 # Date this plugin/plugin version was released
-releaseDate=November 21, 2009
+releaseDate=Feb 22, 2010
 
 # If this plugin is never meant to be downloaded except as part of a plugin (not common) add this property.  Default is "no"
 themeOnly=no
