@@ -208,7 +208,7 @@ public class ClusterPlugin extends CytoscapePlugin {
     private class AboutDialog extends JDialog {
     	static final long serialVersionUID=-945045L;
         public AboutDialog() {
-            super(Cytoscape.getDesktop(), "About this Plugin", false);
+             super(Cytoscape.getDesktop(), "About this Plugin", false);
             setResizable(false);
 
             //main panel for dialog box
@@ -225,13 +225,11 @@ public class ClusterPlugin extends CytoscapePlugin {
             }
 
             editorPane.setText(        
-                    "<html><body>"+logoCode+"<P align=center><b>ClusterViz 1.1(November 2009) </b><BR>" +
-                    "<i>An hierarchical clustering method for finding molecular complexes</i><BR>" +
-                    "ClusterViz finds clusters (highly interconnected regions, protein complexes)<BR>" +
-                    "in large protein interaction networks<BR>" +
-                    "using maximal clique-based hierarchical algomerative clustering algorithm.<BR><BR>"+
-                    "<a href='http://code.google.com/p/clusterviz-cytoscape/'>For references, view the project home page.^-^</a><BR><BR>"+
-                    "</P></body></html>");
+                    "<html><body>"+logoCode+"<h1>ClusterViz</h1>" +
+                    "<p>ClusterViz is a plugin designed for graph clustering and visualization.</p>"+
+                    "<p>Developed by Juan Cai, Gang Chen</p>"+
+                    "<p><a href='http://code.google.com/p/clusterviz-cytoscape/'>Please visit the project home page for more details.</a>"+
+                     "</p></body></html>");
             setContentPane(editorPane);
         }
         private class HyperlinkAction implements HyperlinkListener {
@@ -240,7 +238,7 @@ public class ClusterPlugin extends CytoscapePlugin {
                 this.pane = pane;
             }
             public void hyperlinkUpdate(HyperlinkEvent event) {
-                if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                 if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     cytoscape.util.OpenBrowser.openURL(event.getURL().toString());
                 }
             }

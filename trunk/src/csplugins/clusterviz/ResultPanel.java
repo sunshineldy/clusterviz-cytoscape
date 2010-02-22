@@ -166,8 +166,12 @@ public class ResultPanel extends JPanel {
         JButton closeButton = new JButton("Discard");
         closeButton.setToolTipText("Close this result panel");
         closeButton.addActionListener(new ResultPanel.DiscardAction(this));
+        JButton unclusterButton = new JButton("All Clustered Nodes");
+        unclusterButton.setToolTipText("Select all clustered nodes");
+        unclusterButton.addActionListener(new ResultPanel.ClusterAction(this));
         buttonPanel.add(exportButton);
         buttonPanel.add(closeButton);
+        buttonPanel.add(unclusterButton);
 
         panel.add(explorePanel, BorderLayout.NORTH);
         panel.add(buttonPanel, BorderLayout.SOUTH);
@@ -283,7 +287,7 @@ public class ResultPanel extends JPanel {
         //TODO: there may be some other situation like this ,we need to find out them
         //Make a special label for the initial position
         labelTable.put(new Integer((int) (currentParamsCopy.getNodeScoreCutoff() * 1000)),
-        		new JLabel("¡ü") );
+        		new JLabel("ï¿½ï¿½") );
         sizeSlider.setLabelTable(labelTable);
         sizeSlider.setFont(new Font("Arial", Font.PLAIN, 8));
         String sizeTip = "Move the slider to change the size of the complex";
@@ -615,6 +619,31 @@ public class ResultPanel extends JPanel {
     }
 
     /**
+     * Handles the select unclustered nodes process for this results panel
+     */
+    private class ClusterAction extends AbstractAction {
+        ResultPanel trigger;
+        ClusterAction(ResultPanel trigger) {
+            this.trigger = trigger;
+        }
+        public void actionPerformed(ActionEvent e) {
+        	int length=0;
+        	for(int i=0; i < complexes.length; i++){
+        		length = length + complexes[i].getGPCluster().getNodeIndicesArray().length;
+        	}
+        	int[] clusteredNodes;
+        	clusteredNodes = new int[length];
+        	int index=0;
+        	for(int i=0; i < complexes.length; i++){
+        		for(int j=0;j <= complexes[i].getGPCluster().getNodeIndicesArray().length -1; j++){
+        			clusteredNodes[index++] = complexes[i].getGPCluster().getNodeIndicesArray()[j];
+        		}
+        	}
+
+        	selectCluster(network.createGraphPerspective(clusteredNodes));
+        }
+    }
+    /**
      * Handles the close press for this results panel
      */
     private class DiscardAction extends AbstractAction {
@@ -647,7 +676,7 @@ public class ResultPanel extends JPanel {
                 String fileName = file.getAbsolutePath();
                 String message = "Save the complete information \n" +
                 		"of the resulting complexes?"+
-                		"(Y/Complete£¬N/Basic)";
+                		"(Y/Completeï¿½ï¿½N/Basic)";
                 int result = JOptionPane.showOptionDialog(Cytoscape.getDesktop(), new Object[]{message}, "Export Mode", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (result == JOptionPane.YES_OPTION) {
                 	ClusterUtil.exportResults(alg, complexes, network, fileName);
