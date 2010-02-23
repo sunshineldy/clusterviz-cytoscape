@@ -814,7 +814,7 @@ public class MainPanel extends JPanel {
     private class FormattedTextFieldAction implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent e) {
             JFormattedTextField source = (JFormattedTextField) e.getSource();
-            String message = "Invaluled input£¡\n";
+            String message = "Invaluled input\n";
             boolean invalid = false;
             
             if (source == degreeThreshold) {
