@@ -47,6 +47,13 @@ public class AnalyzeAction implements ActionListener {
     private int resultIndex;
     
     AnalyzeAction () {}
+
+	/**
+	 * This is constructor for AnalyzeAction class
+	 *
+	 * @param curParams current parameter set
+	 * @param vistyle
+	 */
     AnalyzeAction (ParameterSet curParams, ClusterVisualStyle vistyle) {
         this.curParams = curParams;
         this.vistyle = vistyle;
@@ -69,7 +76,7 @@ public class AnalyzeAction implements ActionListener {
         }
         if (network.getNodeCount() < 1) {
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                    "Network has not been loaded!", "Error£¡", JOptionPane.WARNING_MESSAGE);
+                    "Network has not been loaded!", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
         Set selectedNodes = network.getSelectedNodes();
@@ -181,12 +188,12 @@ public class AnalyzeAction implements ActionListener {
 
 		if (curParams.getScope().equals(ParameterSet.SELECTION) && curParams.getSelectedNodes().length < 1) {
             analyze = INTERRUPTED;
-            interruptedMessage= "At least one nodes should be selected£¡";
+            interruptedMessage= "At least one nodes should be selected";
         }else{
         	String which=curParams.getAlgorithm();      
         	if(which.length()==0){	//if no algorithm is selected
         		analyze=INTERRUPTED;
-        		interruptedMessage="An algorithm need to be selected for clustering£¡";
+        		interruptedMessage="An algorithm need to be selected for clustering";
         	}else{
         		if(!newNet){
         			//get list of copys of the saved parameters for comparison with the current ones
@@ -199,7 +206,7 @@ public class AnalyzeAction implements ActionListener {
         					CytoPanel panel = Cytoscape.getDesktop().getCytoPanel(SwingConstants.EAST);
         					resultIndex=panel.indexOfComponent(curParaSet.getResultTitle());
         					analyze=EXISTS;
-            				interruptedMessage="The result exits£¡";
+            				interruptedMessage="The result exits";
             				break;
         				}
         			}
@@ -457,7 +464,7 @@ public class AnalyzeAction implements ActionListener {
         public String getTitle() {
         	StringBuffer state=new StringBuffer("Identifying Modules...");
         	if(this.which.equals(ParameterSet.EAGLE))
-        		state.append("This process may take a little longer time. Please wait£¡");
+        		state.append("This process may take a little longer time. Please wait");
             return state.toString();
         }    
         public Algorithm getAlg() {
