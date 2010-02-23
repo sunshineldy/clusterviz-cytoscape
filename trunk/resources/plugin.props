@@ -31,7 +31,7 @@ projectURL=http://code.google.com/p/clusterviz-cytoscape/
 pluginAuthorsInstitutions=Juan Cai, Gang Chen and Jianxin Wang:Central South University, China
 
 # Date this plugin/plugin version was released
-releaseDate=Feb 22, 2010
+releaseDate=February 22, 2010
 
 # If this plugin is never meant to be downloaded except as part of a plugin (not common) add this property.  Default is "no"
 themeOnly=no
