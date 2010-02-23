@@ -1,8 +1,12 @@
 2010-02-22 Gang Chen <chen.gang1983@gmail.com>
-
 * ResultPanle.java
 	a new button "All Clustered Nodes" has been added to bottom results panel
 	a new class ClusterAction has been added to ResultPanel
-
 * ClusterPlugin.java
 	help information has been corrected
+* src/csplugin/clusterviz/
+	this directory has been moved to src/
+* src/csplugin/
+	this directory has been deleted
+* src/clusterviz/algorithms/
+	has been created for algorithm classes
