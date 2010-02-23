@@ -20,7 +20,7 @@
  	<property name="build.dir" value="build"/>
   	<property name="build.classes" value="${build.dir}/classes"/>
     <property name="release.dir" value="${build.dir}/release"/>
-	<property name="src_release.dir" value="${build.dir}/src_release/csplugins/clusterviz"/>
+	<property name="src_release.dir" value="${build.dir}/src_release/clusterviz"/>
 	<property name="zip_release.dir" value="${build.dir}/zip_release"/>
 
 	<!-- Global "magic" property for <javac> -->
@@ -48,26 +48,26 @@
 
 	<!--  Target to compile all PlugIn Code -->
   	<target name="compile" depends="prepare"
-		description="Compiles iall PlugIn source code (Note: Expects to run from csplugins/clusterviz directory).">
-   		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" target="1.5">
-			<include name="csplugins/**"/>
+ 		description="Compiles iall PlugIn source code (Note: Expects to run from clusterviz directory).">
+   		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" target="1.5" compiler="modern" source="1.5">
+			<include name="**"/>
             <classpath refid="classpath"/>
 		</javac>
 	</target>
 
 	<!--  Create PlugIn Jar File -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
-		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/csplugins/clusterviz"/>
-		<copy todir="${build.classes}/csplugins/clusterviz/resources">
-   		    <fileset dir="${src.dir}/csplugins/clusterviz/resources/"/>
+		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/clusterviz"/>
+		<copy todir="${build.classes}/clusterviz/resources">
+   		    <fileset dir="${src.dir}/clusterviz/resources/"/>
    		</copy>
 
    		<jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
 			<manifest>
 			  <attribute name="Cytoscape-Plugin"
-			             value="csplugins.clusterviz.ClusterPlugin"/>
-			</manifest>
+			             value="clusterviz.ClusterPlugin"/>
+ 			</manifest>
 	</jar>
 	<copy file="${build.dir}/${plugin.name}.jar" todir="${cytoscape.dir}/plugins/" />
 	<echo message="${plugin.name}.jar is now complete.  It is located in cytoscape plugin directory:${cytoscape.dir}/plugins"/>
@@ -79,7 +79,7 @@
 		link="http://java.sun.com/j2se/1.4.2/docs/api/">
 
 		<packageset dir="${src.dir}">
-			<include name="csplugins/**"/>
+			<include name="**"/>
 		</packageset>
 		</javadoc>
 	</target>
