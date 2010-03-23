@@ -133,14 +133,16 @@ public class ResultPanel extends JPanel {
         ButtonGroup ways = new ButtonGroup();
         ways.add(way1);
         ways.add(way2);
-        ways.add(way3);
+        if(currentParamsCopy.getAlgorithm().equals(ParameterSet.MCODE))
+        	ways.add(way3);
         //the label
         JLabel label=new JLabel("Sort Complexes by (descend):");
         //add components to the sortPanel
         sortPanel.add(label);
         sortPanel.add(way1);
         sortPanel.add(way2);
-        sortPanel.add(way3);
+        if(currentParamsCopy.getAlgorithm().equals(ParameterSet.MCODE))
+        	sortPanel.add(way3);
         sortPanel.setToolTipText("Select a way to sort the complexes");
         
         panel.add(sortPanel,BorderLayout.NORTH);
@@ -382,16 +384,19 @@ public class ResultPanel extends JPanel {
         details.append("Edges: ");
         details.append(cluster.getGPCluster().getEdgeCount());
         details.append("\n");
-        details.append("Score: ");
-        NumberFormat nf1 = NumberFormat.getInstance();
-        nf1.setMaximumFractionDigits(3);
-        details.append(nf1.format(cluster.getClusterScore()));
-        details.append("\n");
+        if(currentParamsCopy.getAlgorithm().equals(ParameterSet.MCODE)){
+            details.append("Score: ");
+            NumberFormat nf1 = NumberFormat.getInstance();
+            nf1.setMaximumFractionDigits(3);
+            details.append(nf1.format(cluster.getClusterScore()));
+            details.append("\n");
+        }
         details.append("Modularity: ");
         NumberFormat nf2 = NumberFormat.getInstance();
         nf2.setMaximumFractionDigits(3);
         details.append(nf2.format(cluster.getModularity()));
-        details.append("   InDeg: ");
+        details.append("\n");
+        details.append("InDeg: ");
         details.append(cluster.getInDegree());
         details.append(" OutDeg: ");
         int outDegree=cluster.getTotalDegree()-2*cluster.getInDegree();
