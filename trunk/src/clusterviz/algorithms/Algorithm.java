@@ -13,6 +13,7 @@ import java.util.*;
 
 /**
  * Abstract class for clustering algorithms
+ * @author Gang Chen <chen.gang1983@gmail.com>
  */
 
 abstract class Algorithm{

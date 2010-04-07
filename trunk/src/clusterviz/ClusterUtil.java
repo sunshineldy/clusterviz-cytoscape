@@ -308,7 +308,7 @@ public class ClusterUtil {
      * Save results to a file
      *
      * @param alg       The algorithm instance containing parameters, etc.
-     * @param clusters  The list of clusters
+     * @param complexes  The list of clusters
      * @param network   The network source of the clusters
      * @param fileName  The file name to write to
      * @return True if the file was written, false otherwise
@@ -390,7 +390,7 @@ public class ClusterUtil {
      * Save results to a file
      *
      * @param alg       The algorithm instance containing parameters, etc.
-     * @param clusters  The list of clusters
+     * @param complexes  The list of clusters
      * @param network   The network source of the clusters
      * @param fileName  The file name to write to
      * @return True if the file was written, false otherwise

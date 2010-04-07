@@ -212,7 +212,7 @@ public class ParameterSet {
      * @param algorithm The algorithm user choosed to cluster the network
      * @param selectedNodes Node selection for selection-based scope
      * @param includeLoops include loops or not
-     * @param degreeThrshold degree threshold
+     * @param degreeThreshold degree threshold
      * @param kCore the value of k in K-Core
      * @param optimize Determines if parameters are customized by user/default or optimized
      * @param maxDepthFromStart max depth from seed node
