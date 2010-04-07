@@ -163,7 +163,7 @@ public class Algorithm {
     }
     /**
      * FAG-EC Algorithm Step 2 Generate complexes: 
-     * @param inputnetwork The input network
+     * @param inputNetwork The input network
      * @param resultTitle Title of the result, used as an identifier in various hash maps
      * @return the clusters identified
      */
@@ -487,9 +487,9 @@ public class Algorithm {
     }
     /**
      * expandedFAC-EC Algorithm for finding complexes
-     * @param inputnetwork The input network
+     * @param inputNetwork The input network
      * @param resultTitle Title of the result, used as an identifier in various hash maps
-     * @return
+     * @return array of clusters
      */
     public Cluster[] FAG_ECXFinder(CyNetwork inputNetwork,String resultTitle){        
     	String callerID = "Algorithm.ExpandedFAC_ECFinder";
@@ -720,9 +720,9 @@ public class Algorithm {
     }
     /**
      * EAGLE Algorithm for finding complexes
-     * @param inputnetwork The input network
+     * @param inputNetwork The input network
      * @param resultTitle Title of the result, used as an identifier in various hash maps
-     * @return
+     * @return array of clusters
      */
     public Cluster[] EAGLEFinder(CyNetwork inputNetwork,String resultTitle){
         String callerID = "Algorithm.EAGLEFinder";

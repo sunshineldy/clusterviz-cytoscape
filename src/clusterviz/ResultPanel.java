@@ -27,6 +27,8 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
+import BiNGO.SettingsPanel;
+
 /**
  * Show a Table Browser for the results of clustering. This class sets up the GUI.
  */
@@ -170,10 +172,15 @@ public class ResultPanel extends JPanel {
         closeButton.addActionListener(new ResultPanel.DiscardAction(this));
         JButton unclusterButton = new JButton("All Clustered Nodes");
         unclusterButton.setToolTipText("Select all clustered nodes");
-        unclusterButton.addActionListener(new ResultPanel.ClusterAction(this));
-        buttonPanel.add(exportButton);
+        unclusterButton.addActionListener(new ResultPanel.UnclusterAction(this));
+        JButton goEnrichmentButton = new JButton("GO Enrichment Analysis");
+        goEnrichmentButton.setToolTipText("Perform GO Enrichment Analysis, need BiNGO");
+        goEnrichmentButton.addActionListener(new ResultPanel.GOenrichmentAction(this));
+        
+		buttonPanel.add(exportButton);
         buttonPanel.add(closeButton);
         buttonPanel.add(unclusterButton);
+        buttonPanel.add(goEnrichmentButton);
 
         panel.add(explorePanel, BorderLayout.NORTH);
         panel.add(buttonPanel, BorderLayout.SOUTH);
@@ -623,12 +630,40 @@ public class ResultPanel extends JPanel {
         }
     }
 
+	/**
+	 * Call BiNGO plugin to perform GO enrichment analysis
+	 */
+	private class GOenrichmentAction extends AbstractAction{
+		ResultPanel triger;
+		GOenrichmentAction(ResultPanel triger){
+			this.triger = triger;
+		}
+		public void actionPerformed(ActionEvent e){
+			String bingoDir;
+			String tmp = System.getProperty("user.dir");
+        	bingoDir = new File(tmp, "plugins").toString();
+			JFrame window = new JFrame("BiNGO Settings");
+            SettingsPanel settingsPanel = new SettingsPanel(bingoDir);
+            //window.setJMenuBar(new HelpMenuBar(settingsPanel).getHelpMenuBar());
+            window.getContentPane().add(settingsPanel);
+            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.pack();
+            Dimension screenSize =
+                    Toolkit.getDefaultToolkit().getScreenSize();
+            // for central position of the settingspanel.
+            window.setLocation(screenSize.width / 2 - (window.getWidth() / 2),
+                    screenSize.height / 2 - (window.getHeight() / 2));
+            window.setVisible(true);
+            window.setResizable(true);
+		}
+	}
+
     /**
      * Handles the select unclustered nodes process for this results panel
      */
-    private class ClusterAction extends AbstractAction {
+    private class UnclusterAction extends AbstractAction {
         ResultPanel trigger;
-        ClusterAction(ResultPanel trigger) {
+        UnclusterAction(ResultPanel trigger) {
             this.trigger = trigger;
         }
         public void actionPerformed(ActionEvent e) {

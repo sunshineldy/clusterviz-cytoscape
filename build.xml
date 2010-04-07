@@ -14,7 +14,7 @@
 	<property name="cytoscape.dir" value="/bioinfo/gang/programs/Cytoscape_2.6.3/"/>
 
     <!--  The directory containing library jar files -->
-	<property name="lib.dir" value="${cytoscape.dir}/lib"/>
+	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
 
   	<!-- Temporary build directories -->
  	<property name="build.dir" value="build"/>
@@ -30,10 +30,10 @@
 	<path id="classpath">
 		<pathelement path="${build.classes}"/>
         <pathelement path="${cytoscape.dir}/cytoscape.jar"/>
-		<fileset dir="${lib.dir}">
+		<fileset dir="${cytoscape.lib.dir}">
 			<include name="**/*.jar"/>
 		</fileset>
-	</path>
+		</path>
 
   	<!-- Target to create the build directories prior to compilation -->
   	<target name="prepare">
@@ -59,8 +59,13 @@
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
 		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/clusterviz"/>
 		<copy todir="${build.classes}/clusterviz/resources">
-   		    <fileset dir="${src.dir}/clusterviz/resources/"/>
-   		</copy>
+			<fileset dir="${src.dir}/clusterviz/resources/"/>
+		</copy>
+		<copy todir="${build.classes}/">
+			<fileset dir="${src.dir}/BiNGO/">
+				<include name="*" />
+			</fileset>
+		</copy>
 
    		<jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
@@ -68,7 +73,7 @@
 			  <attribute name="Cytoscape-Plugin"
 			             value="clusterviz.ClusterPlugin"/>
  			</manifest>
-	</jar>
+		</jar>
 	<copy file="${build.dir}/${plugin.name}.jar" todir="${cytoscape.dir}/plugins/" />
 	<echo message="${plugin.name}.jar is now complete.  It is located in cytoscape plugin directory:${cytoscape.dir}/plugins"/>
 	</target>
