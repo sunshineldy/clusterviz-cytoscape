@@ -1,3 +1,7 @@
+2010-04-06 Gang Chen <chen.gang1983@gmail.com>
+* BiNGO has been integrated to perform GO enrichment analysis
+* Results panel has been refined by Cai Juan
+
 2010-02-22 Gang Chen <chen.gang1983@gmail.com>
 * ResultPanle.java
 	a new button "All Clustered Nodes" has been added to bottom results panel
