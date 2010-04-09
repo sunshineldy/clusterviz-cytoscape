@@ -1,4 +1,4 @@
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 /*
   File: TextJarReader.java 
   

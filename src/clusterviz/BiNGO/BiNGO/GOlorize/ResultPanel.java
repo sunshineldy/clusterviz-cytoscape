@@ -27,10 +27,10 @@
  * Authors: Olivier Garcia
  */
 
-package BiNGO.GOlorize;
+package clusterviz.BiNGO.BiNGO.GOlorize;
 
-import BiNGO.Browser;
-import BiNGO.SignificantFigures;
+import clusterviz.BiNGO.BiNGO.Browser;
+import clusterviz.BiNGO.BiNGO.SignificantFigures;
 import java.io.*;
 import java.util.*;
 import java.text.*;

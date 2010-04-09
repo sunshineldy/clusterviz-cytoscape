@@ -27,7 +27,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
-import BiNGO.SettingsPanel;
+import clusterviz.BiNGO.BiNGO.SettingsPanel;
 
 /**
  * Show a Table Browser for the results of clustering. This class sets up the GUI.

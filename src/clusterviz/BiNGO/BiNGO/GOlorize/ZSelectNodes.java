@@ -27,7 +27,7 @@
  * Authors: Olivier Garcia
  */
 
-package BiNGO.GOlorize;
+package clusterviz.BiNGO.BiNGO.GOlorize;
 
 import java.awt.event.*;
 import java.util.*;

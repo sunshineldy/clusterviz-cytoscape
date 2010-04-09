@@ -1,4 +1,4 @@
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 
 /* * Copyright (c) 2005 Flanders Interuniversitary Institute for Biotechnology (VIB)
  * *
@@ -82,7 +82,7 @@ public class SettingsPanelActionListener implements ActionListener {
     --------------------------------------------------------------*/
     private SettingsPanel settingsPanel;
     private BingoParameters params;
-    private BiNGO.GOlorize.GoBin goBin ;
+    private clusterviz.BiNGO.BiNGO.GOlorize.GoBin goBin ;
     private JTaskConfig config;
     private CyNetworkView startNetworkView;
     private CyNetwork startNetwork;
@@ -877,7 +877,7 @@ public class SettingsPanelActionListener implements ActionListener {
             display.makeWindow();
         }
         if((goBin == null) || goBin.isWindowClosed()){
-           goBin = new BiNGO.GOlorize.GoBin(settingsPanel, startNetworkView);
+           goBin = new clusterviz.BiNGO.BiNGO.GOlorize.GoBin(settingsPanel, startNetworkView);
         }
         
         if(params.getAnnotationFile() == null){

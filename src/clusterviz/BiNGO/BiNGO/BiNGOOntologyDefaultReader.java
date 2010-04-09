@@ -1,4 +1,4 @@
-package BiNGO ;
+package clusterviz.BiNGO.BiNGO ;
 
 // Adapted from : OntologyFlatFileReader.java in Cytoscape
 //------------------------------------------------------------------------------

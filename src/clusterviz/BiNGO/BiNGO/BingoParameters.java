@@ -1,4 +1,4 @@
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 
 import cytoscape.data.annotation.Annotation;
 import cytoscape.data.annotation.Ontology;

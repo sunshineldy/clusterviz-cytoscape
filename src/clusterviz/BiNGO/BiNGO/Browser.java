@@ -1,4 +1,4 @@
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 
 /*
  * Adapted from Browser.java in package com.Ostermiller.util

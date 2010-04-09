@@ -27,9 +27,9 @@
  * Authors: Olivier Garcia
  */
 
-package BiNGO.GOlorize;
+package clusterviz.BiNGO.BiNGO.GOlorize;
 
-import BiNGO.SettingsPanel;
+import clusterviz.BiNGO.BiNGO.SettingsPanel;
 import giny.model.GraphPerspectiveChangeEvent;
 import java.io.*;
 import java.util.*;
@@ -91,7 +91,7 @@ public class GoBin extends javax.swing.JFrame{
         private SettingsPanel settingsPanel;
         private CyNetworkView networkView ;
     
-    public GoBin(BiNGO.SettingsPanel settingsPanel, CyNetworkView networkView){
+    public GoBin(clusterviz.BiNGO.BiNGO.SettingsPanel settingsPanel, CyNetworkView networkView){
         
         this.setTitle("BiNGO output");
         this.settingsPanel = settingsPanel;
