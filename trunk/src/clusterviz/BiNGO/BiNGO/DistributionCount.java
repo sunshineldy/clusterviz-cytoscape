@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 
 import java.util.HashMap;
 import java.util.HashSet;

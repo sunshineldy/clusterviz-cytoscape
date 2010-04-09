@@ -27,7 +27,7 @@
  * Authors: Olivier Garcia
  */
 
-package BiNGO.GOlorize;
+package clusterviz.BiNGO.BiNGO.GOlorize;
 
 import javax.swing.table.* ;
 

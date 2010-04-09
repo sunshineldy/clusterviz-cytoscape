@@ -28,7 +28,7 @@
 
  */
 
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;

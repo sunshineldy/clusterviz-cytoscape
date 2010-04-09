@@ -1,4 +1,4 @@
-package BiNGO ;
+package clusterviz.BiNGO.BiNGO ;
 
 // redistributed from Sun, see http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html
 

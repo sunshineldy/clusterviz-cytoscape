@@ -1,4 +1,4 @@
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 
 /*
  * Adapted from SignificantFigures.java in package com.Ostermiller.util

@@ -1,4 +1,4 @@
-package BiNGO ;
+package clusterviz.BiNGO.BiNGO ;
 
 /* * Copyright (c) 2005 Flanders Interuniversitary Institute for Biotechnology (VIB)
  * *

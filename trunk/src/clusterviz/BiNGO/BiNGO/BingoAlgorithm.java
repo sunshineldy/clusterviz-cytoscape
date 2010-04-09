@@ -1,4 +1,4 @@
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 
 import java.util.HashMap;
 

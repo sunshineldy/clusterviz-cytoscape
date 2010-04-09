@@ -1,4 +1,4 @@
-package BiNGO;
+package clusterviz.BiNGO.BiNGO;
 
 /* * Copyright (c) 2005 Flanders Interuniversitary Institute for Biotechnology (VIB)
  * *
@@ -39,7 +39,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Properties;
 import java.io.IOException;
-import BiNGO.GOlorize.*;
+import clusterviz.BiNGO.BiNGO.GOlorize.*;
 
 /******************************************************************
  * SettingsPanel.java:       Steven Maere & Karel Heymans (c) March 2005
