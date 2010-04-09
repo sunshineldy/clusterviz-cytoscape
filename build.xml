@@ -61,11 +61,6 @@
 		<copy todir="${build.classes}/clusterviz/resources">
 			<fileset dir="${src.dir}/clusterviz/resources/"/>
 		</copy>
-		<copy todir="${build.classes}/">
-			<fileset dir="${src.dir}/BiNGO/">
-				<include name="*" />
-			</fileset>
-		</copy>
 
    		<jar destfile="${build.dir}/${plugin.name}.jar">
 			<fileset dir="${build.classes}"/>
