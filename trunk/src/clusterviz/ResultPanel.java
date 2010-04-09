@@ -296,7 +296,7 @@ public class ResultPanel extends JPanel {
         //TODO: there may be some other situation like this ,we need to find out them
         //Make a special label for the initial position
         labelTable.put(new Integer((int) (currentParamsCopy.getNodeScoreCutoff() * 1000)),
-        		new JLabel("��") );
+        		new JLabel("^") );
         sizeSlider.setLabelTable(labelTable);
         sizeSlider.setFont(new Font("Arial", Font.PLAIN, 8));
         String sizeTip = "Move the slider to change the size of the complex";
