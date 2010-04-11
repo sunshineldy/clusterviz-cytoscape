@@ -1,14 +1,1 @@
 #labels Phase-Design
-TODO in ClusterViz 1.2
-
-= Introduction =
-We plan to release ClusterViz 1.2 in one month. Following is TODOs for the next release.
-
-
-= Details =
-
-  * Refactor the structure of the codes. Each algorithms will be an independent class. New algorithms can be added easily in future.
-  * Detailed document will be provide to help user optimize parameters.
-  * More operations on identified clusters will be implemented, such as union, comparison. 
-  * Compatible with Cytoscape 2.7
-  * Compatible with nested network implemented in Cytoscape 2.7
