@@ -11,6 +11,7 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.mappings.*;
+import cytoscape.visual.VisualPropertyDependency;
 
 import java.awt.*;
 
@@ -42,9 +43,9 @@ public class ClusterVisualStyle extends VisualStyle {
      * and colors given the new maximum score.
      */
     public void initCalculators() {
-        NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
-        createNodeShape(nac);//calculate the shape of a node according to it's clustering status
-        createNodeColor(nac);//calculate the color of a node given the score after scoring
+        NodeAppearanceCalculator nac = new NodeAppearanceCalculator(this.getDependency());
+		//createNodeShape(nac);//calculate the shape of a node according to it's clustering status
+        //createNodeColor(nac);//calculate the color of a node given the score after scoring
         this.setNodeAppearanceCalculator(nac);
     }
 
