@@ -45,7 +45,7 @@ public class ClusterVisualStyle extends VisualStyle {
     public void initCalculators() {
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator(this.getDependency());
 		//createNodeShape(nac);//calculate the shape of a node according to it's clustering status
-        //createNodeColor(nac);//calculate the color of a node given the score after scoring
+        createNodeColor(nac);//calculate the color of a node given the score after scoring
         this.setNodeAppearanceCalculator(nac);
     }
 
