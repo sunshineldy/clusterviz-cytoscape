@@ -12,6 +12,7 @@ import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.VisualPropertyDependency;
+import cytoscape.visual.*;
 
 import java.awt.*;
 
@@ -44,17 +45,17 @@ public class ClusterVisualStyle extends VisualStyle {
      */
     public void initCalculators() {
         NodeAppearanceCalculator nac = new NodeAppearanceCalculator(this.getDependency());
-		//createNodeShape(nac);//calculate the shape of a node according to it's clustering status
+		createNodeShape(nac);//calculate the shape of a node according to it's clustering status
         createNodeColor(nac);//calculate the color of a node given the score after scoring
         this.setNodeAppearanceCalculator(nac);
     }
 
     private void createNodeShape(NodeAppearanceCalculator nac) {
-        DiscreteMapping discreteMapping = new DiscreteMapping(new Byte(TRIANGLE), "Node_Status", ObjectMapping.NODE_MAPPING);
+        DiscreteMapping discreteMapping = new DiscreteMapping(NodeShape.TRIANGLE, "Node_Status", ObjectMapping.NODE_MAPPING);
         //Node shapes are determined by three discrete classifications
-        discreteMapping.putMapValue("Clustered",new Byte(DIAMOND));
-        discreteMapping.putMapValue("Seed",new Byte(TRIANGLE));
-        discreteMapping.putMapValue("Unclustered",new Byte(TRIANGLE));
+        discreteMapping.putMapValue("Clustered",NodeShape.DIAMOND);
+        discreteMapping.putMapValue("Seed",NodeShape.TRIANGLE);
+        discreteMapping.putMapValue("Unclustered",NodeShape.TRIANGLE);
 
         Calculator nodeShapeCalculator = new BasicCalculator("Node Shape Calculator", discreteMapping, VisualPropertyType.NODE_SHAPE);
         nac.setCalculator(nodeShapeCalculator);
