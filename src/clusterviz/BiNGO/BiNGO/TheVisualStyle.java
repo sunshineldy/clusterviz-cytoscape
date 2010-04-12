@@ -85,9 +85,9 @@ public class TheVisualStyle {
     public void adaptVisualStyle(VisualStyle style, CyNetwork network) {
 
         //---------------------set defaults--------------------------------------//
-
+		style.getDependency().set(VisualPropertyDependency.Definition.NODE_SIZE_LOCKED,true);
         style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE, NodeShape.ELLIPSE);
-        style.getNodeAppearanceCalculator().getDefaultAppearance().setNodeSizeLocked(true); 
+        //style.getNodeAppearanceCalculator().getDefaultAppearance().setNodeSizeLocked(true); 
         style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_FONT_SIZE,24);
         style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_SHAPE,ArrowShape.DELTA);
         style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_COLOR,Color.black);
