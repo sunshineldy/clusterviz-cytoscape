@@ -77,7 +77,7 @@ public class BingoParameters {
         bingo_props = new Properties();
         //Open the properties file
         try {
-            bingo_props.load(JarReader("bingo_gui.properties"));
+            bingo_props.load(JarReader("clusterviz/BiNGO/BiNGO/bingo_gui.properties"));
         } catch (IOException e) {
             //throw e;
             String propfile_path = openResourceFile("bingo_gui.properties");
@@ -101,10 +101,16 @@ public class BingoParameters {
     }
     
     public InputStream JarReader (String name) throws IOException {
-        URL url = getClass().getResource("/"+name);
-        JarURLConnection juc = (JarURLConnection) url.openConnection ();
+
+		InputStream is = getClass().getClassLoader().getResourceAsStream(name);
+
+        /*URL url = getClass().getResource(name);
+		System.out.println(url.toString());
+        JarURLConnection juc = (JarURLConnection) url.openConnection();
         JarFile jarFile = juc.getJarFile();
-        InputStream is = jarFile.getInputStream (jarFile.getJarEntry(name));
+		System.out.println(jarFile.getEntry("clusterviz/BiNGO/BiNGO/bingo_gui.properties"));
+        InputStream is = jarFile.getInputStream(jarFile.getEntry(name));
+		System.out.println(is);*/
         return is;
     } 
 
