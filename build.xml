@@ -46,20 +46,55 @@
     		<delete dir="${build.dir}"/>
   	</target>
 
-	<!--  Target to compile all PlugIn Code -->
+	<!--  Target to compile all PlugIn Code for release -->
   	<target name="compile" depends="prepare"
  		description="Compiles iall PlugIn source code (Note: Expects to run from clusterviz directory).">
-   		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" target="1.5" compiler="modern" source="1.5" debug="on">
+   		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" target="1.5" compiler="modern" source="1.5">
 			<include name="**"/>
             <classpath refid="classpath"/>
 		</javac>
 	</target>
 
-	<!--  Create PlugIn Jar File -->
-   	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
+	<!--  Target to compile all PlugIn Code for test and debug -->
+  	<target name="debug" depends="prepare"
+ 		description="Compiles iall PlugIn source code (Note: Expects to run from clusterviz directory).">
+   		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" target="1.5" compiler="modern" source="1.5" debug="on" debuglevel="lines,vars,source">
+			<include name="**"/>
+            <classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<!--  Create PlugIn Jar File for release -->
+   	<target name="release" depends="compile" description="Creates PlugIn Jar File.">
 		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/clusterviz"/>
 		<copy todir="${build.classes}/clusterviz/resources">
 			<fileset dir="${src.dir}/clusterviz/resources/"/>
+		</copy>
+
+   		<jar destfile="${build.dir}/${plugin.name}.jar">
+			<fileset dir="${build.classes}"/>
+			<manifest>
+			  <attribute name="Cytoscape-Plugin"
+			             value="clusterviz.ClusterPlugin"/>
+ 			</manifest>
+		</jar>
+	</target>
+
+	<!--  Create PlugIn Jar File -->
+   	<target name="jar" depends="debug" description="Creates PlugIn Jar File.">
+		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/clusterviz"/>
+		<copy todir="${build.classes}/clusterviz/resources">
+			<fileset dir="${src.dir}/clusterviz/resources/"/>
+		</copy>
+
+		<copy todir="${build.classes}/clusterviz/BiNGO/">
+			<fileset dir="${src.dir}/clusterviz/BiNGO/"/>
+		</copy>
+
+		<copy todir="${build.classes}/clusterviz/BiNGO/BiNGO/">
+			<fileset dir="${src.dir}/clusterviz/BiNGO/BiNGO/">
+				<include name="*.properties" />
+			</fileset>
 		</copy>
 
    		<jar destfile="${build.dir}/${plugin.name}.jar">
