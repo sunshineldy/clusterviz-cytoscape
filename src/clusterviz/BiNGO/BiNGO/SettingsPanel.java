@@ -217,7 +217,7 @@ public class SettingsPanel extends JPanel {
     /**
      * This constructor creates the panel with its swing-components.
      */
-    public SettingsPanel(String bingoDir) {
+    public SettingsPanel(String bingoDir, int SelectedCluster) {
         super();
         this.bingoDir = bingoDir;
 
@@ -233,7 +233,7 @@ public class SettingsPanel extends JPanel {
         bingo_props = params.getBingo_props();
 
         //create the JComponents.
-        makeJComponents();
+        makeJComponents(SelectedCluster);
 
         setPreferredSize(new Dimension(DIM_WIDTH, DIM_HEIGHT));
         setOpaque(false);
@@ -407,7 +407,7 @@ public class SettingsPanel extends JPanel {
      * for the data-file and a button to start
      * the calculations.
      */
-    public void makeJComponents() {
+    public void makeJComponents( int SelectedCluster) {
 
         helpButton = new JButton("Help");
         helpButton.setMnemonic(KeyEvent.VK_H);
@@ -425,7 +425,7 @@ public class SettingsPanel extends JPanel {
 
         //JTextField.
         alphaField = new JTextField(bingo_props.getProperty("signif_def"));
-        nameField = new JTextField();
+        nameField = new JTextField("Cluster " + (SelectedCluster+1));
 
         //OverUnderPanel
         overUnderPanel = new OverUnderPanel();
