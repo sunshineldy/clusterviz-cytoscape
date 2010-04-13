@@ -1,0 +1,8 @@
+TODO:
+1. Clean up existing source codes (variable, function and class naming, structure of classes and so on)
+2. Add basic topological analysis to the right-click menu of each identified cluster.
+3. Batch GO enrichment analysis for all identified clusters.
+4. Update GO terms and annotation file online.
+5. Add MCL, k-means clustering algorithms.
+6. Add a nested-network based visual style for clustering result.
+
