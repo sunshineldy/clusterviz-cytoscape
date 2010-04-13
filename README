@@ -1,4 +1,4 @@
-			README for ClusterViz
+README for ClusterViz
 
 This software is released under LGPL license.
 
@@ -17,18 +17,18 @@ CX2009B040.
 Following is a short quick start for the usage of ClusterViz, detailed
 information of the algorithms implemented in this plug-in can be found in
 related papers.
-	1. Download and install latest Cytoscape(www.cytoscape.org).
-	2. Download the Jar version of ClusterViz from our website.
-	3. Copy or move clusterviz.jar file to the plugins directory in the
-directory of Cytoscape.
-	4. Start Cytoscape, import or open a network.
-	5. Click plugin -> ClusterViz -> start.
-	6. It will switch to ClusterViz tab on left panel, choose IPCA and keep all
-parameters as default or you can customize the parameters as you want.
-	7. Click Analysis button.
-	8. After analysis is done, results will be shown in right panel. You can 
-export the results if you like.
-
+	1. Install Cytoscape: Download and install latest Cytoscape 2.7.0 (www.cytoscape.org).
+	2. Install ClusterViz: 1)Download the Jar version of ClusterViz from our
+website, and then move it to the plug-in directory of Cytoscape; 2) Install
+ClusterViz using plug-in manager of Cytoscape.
+	3. Clustering Analysis: Start Cytoscape, and click plugin->ClusterViz->Start
+to start ClusterViz. Choose clustering algorithm and set parameters, then click
+Analyze button. Clustering results will be displayed on the right panel.
+	4. GO Enrichment Analysis: right-click on the interested identified cluster,
+click "GO Enrichment Analysis on Cluster XX" to active the setting panel of GO
+enrichment analysis. Click run BiNGO button to perform GO enrichment analysis.
+Results are provided as a table and a colorful graph.
+	
 3. Contact Information
 
 Please feel free to contact us if any problem exists or you have some
