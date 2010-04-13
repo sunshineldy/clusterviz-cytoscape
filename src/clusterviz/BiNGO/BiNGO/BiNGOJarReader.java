@@ -63,10 +63,12 @@ public BiNGOJarReader (String URI) throws IOException {
   //should bootstrap to the class loader that loads the Cytoscape core classes
   //However, we can't use it until it's been instantiated, so if we get a null
   //reference then we'll fall back to the class loader that loaded this class
-  URL url = getClass().getResource("/" + filename);
-  JarURLConnection juc = (JarURLConnection) url.openConnection ();
-  JarFile jarFile = juc.getJarFile();
-  InputStream is = jarFile.getInputStream (jarFile.getJarEntry (filename));
+
+  InputStream is = getClass().getClassLoader().getResourceAsStream("clusterviz/BiNGO/" + filename);
+  //URL url = getClass().getClassLoader().getResource("clustergiz/BiNGO/" + filename);
+  //JarURLConnection juc = (JarURLConnection) url.openConnection ();
+  //JarFile jarFile = juc.getJarFile();
+  //InputStream is = jarFile.getInputStream (jarFile.getJarEntry (filename));
   reader = new InputStreamReader (is);
 
 } // ctor

@@ -148,7 +148,7 @@ public class AnnotationParser implements Task {
     --------------------------------------------------------------*/
 
     private String openResourceFile(String name) {
-        return getClass().getResource("/"+name).toString();
+        return getClass().getClassLoader().getResource("clusterviz/BiNGO/"+name).toString();
     }
 	
     /**
