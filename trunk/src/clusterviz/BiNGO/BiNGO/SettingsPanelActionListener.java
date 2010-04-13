@@ -314,7 +314,10 @@ public class SettingsPanelActionListener implements ActionListener {
     METHODS.
     --------------------------------------------------------------*/
     private String openResourceFile(String name) {
-        return getClass().getResource("/"+name).toString();
+		System.out.println("ResourceFile:" + name);
+		System.out.println(getClass().getClassLoader().getResource("clusterviz/BiNGO/"+name).toString());
+		System.out.println("ResourceFile");
+        return getClass().getClassLoader().getResource("clusterviz/BiNGO/"+name).toString();
     }
     
     public HashSet<String> conformize(HashSet<String> selection, HashSet<String> allNodes){

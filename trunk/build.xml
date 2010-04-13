@@ -64,24 +64,8 @@
 		</javac>
 	</target>
 
-	<!--  Create PlugIn Jar File for release -->
-   	<target name="release" depends="compile" description="Creates PlugIn Jar File.">
-		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/clusterviz"/>
-		<copy todir="${build.classes}/clusterviz/resources">
-			<fileset dir="${src.dir}/clusterviz/resources/"/>
-		</copy>
-
-   		<jar destfile="${build.dir}/${plugin.name}.jar">
-			<fileset dir="${build.classes}"/>
-			<manifest>
-			  <attribute name="Cytoscape-Plugin"
-			             value="clusterviz.ClusterPlugin"/>
- 			</manifest>
-		</jar>
-	</target>
-
 	<!--  Create PlugIn Jar File -->
-   	<target name="jar" depends="debug" description="Creates PlugIn Jar File.">
+   	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
 		<copy file="${resources.dir}/plugin.props" todir="${build.classes}/clusterviz"/>
 		<copy todir="${build.classes}/clusterviz/resources">
 			<fileset dir="${src.dir}/clusterviz/resources/"/>
