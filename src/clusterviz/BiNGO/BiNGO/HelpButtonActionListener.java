@@ -51,8 +51,6 @@ import java.io.IOException;
 
 
 public class HelpButtonActionListener implements ActionListener {
-
-
     /*--------------------------------------------------------------
     FIELD.
     --------------------------------------------------------------*/
@@ -78,16 +76,8 @@ public class HelpButtonActionListener implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
 
-        /*JOptionPane.showMessageDialog(settingsPanel,
+        JOptionPane.showMessageDialog(settingsPanel,
                                           "For help, see website \n" +
-                                          "http://www.psb.ugent.be/cbd/papers/BiNGO");*/
-        try {
-            //Browser link = new Browser() ;
-            Browser.init();
-            Browser.displayURL("http://www.psb.ugent.be/cbd/papers/BiNGO");
-        }
-        catch (IOException ee) {
-            JOptionPane.showMessageDialog(settingsPanel, "Could not open website :" + ee);
-        }
+                                          "http://www.psb.ugent.be/cbd/papers/BiNGO");
     }
 }
