@@ -18,6 +18,8 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+import clusterviz.algorithms.*;
+
 /**
  * * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
