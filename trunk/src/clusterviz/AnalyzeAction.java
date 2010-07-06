@@ -353,16 +353,17 @@ public class AnalyzeAction implements ActionListener {
             }}
             else if(which.equals(ParameterSet.EAGLE)){
                 try {
-                    alg.setTaskMonitor(taskMonitor, network.getIdentifier());
+					EAGLE alg1 = new EAGLE(null);
+                    alg1.setTaskMonitor(taskMonitor, network.getIdentifier());
                     taskMonitor.setPercentCompleted(0);
                     taskMonitor.setStatus("Step 1 of 3:Calculate all the maximal Clique...");
-                    alg.getMaximalCliques(network,resultTitle);
-                    System.err.println("Finding clique: Time spent " + alg.getFindCliquesTIme() + " ms.");
+                    alg1.getMaximalCliques(network,resultTitle);
+                    System.err.println("Finding clique: Time spent " + alg1.getFindCliquesTIme() + " ms.");
                     if (interrupted )
                         return;
                     taskMonitor.setPercentCompleted(0);
                     taskMonitor.setStatus("Step 2 of 3:Generating Complexes...");
-                    complexes = alg.EAGLEFinder(network, resultTitle);
+                    complexes = alg1.EAGLEFinder(network, resultTitle);
                     if (interrupted)
                         return;
                     taskMonitor.setPercentCompleted(0);

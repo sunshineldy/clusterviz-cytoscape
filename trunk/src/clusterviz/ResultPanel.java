@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.List;
 
 import clusterviz.BiNGO.BiNGO.SettingsPanel;
+import clusterviz.algorithms.*;
 
 /**
  * Show a Table Browser for the results of clustering. This class sets up the GUI.
