@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import clusterviz.algorithms.*;
+
 /**
  * Classe to handle the action of clicking Button Analyze.
  */
@@ -382,16 +384,17 @@ public class AnalyzeAction implements ActionListener {
             }
             else if(which.equals(ParameterSet.FAGEC)){
                 try {
-                    alg.setTaskMonitor(taskMonitor, network.getIdentifier());
+					FAGEC alg1 = new FAGEC(null); 
+                    alg1.setTaskMonitor(taskMonitor, network.getIdentifier());
                     if (analyze == FINDCLIQUE) {
                         taskMonitor.setPercentCompleted(0);
                         taskMonitor.setStatus("Step 1 of 3:Calculate all the maximal Clique...");
-                        alg.getMaximalCliques(network, resultTitle);
+                        alg1.getMaximalCliques(network, resultTitle);
                         if (interrupted )
                             return;
                         taskMonitor.setPercentCompleted(0);
                         taskMonitor.setStatus("Step 2 of 3:Generating Complexes...");
-                        complexes=alg.FAG_ECXFinder(network, resultTitle);
+                        complexes=alg1.FAG_ECFinder(network, resultTitle);
                         if (interrupted )
                             return;
                         taskMonitor.setPercentCompleted(0);
@@ -414,8 +417,8 @@ public class AnalyzeAction implements ActionListener {
                     else{
                         taskMonitor.setPercentCompleted(0);
                         taskMonitor.setStatus("Step 2 of 3:Generating Complexes...");
-                        complexes = alg.FAG_ECFinder(network, resultTitle);
-                    	System.err.println("After FAG-EC.Time used:"+alg.getLastFindTime());
+                        complexes = alg1.FAG_ECFinder(network, resultTitle);
+                    	System.err.println("After FAG-EC.Time used:"+alg1.getLastFindTime());
                         if (interrupted )
                             return;
                         taskMonitor.setPercentCompleted(0);
