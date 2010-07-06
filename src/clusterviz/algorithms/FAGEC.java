@@ -249,5 +249,150 @@ public class FAGEC extends Algorithm{
         return clusters;
     }
 
+    /**
+     * merge two unoverlapped complexes ,weak definition
+     */
+    protected void mergeComplexes1(Cluster c1,Cluster c2){
+    	int inDegree=c1.getInDegree();
+    	int totalDegree=c1.getTotalDegree()+c2.getTotalDegree();
+    	
+    	ArrayList alNodes=c1.getALNodes();
+    	Iterator i=c2.getALNodes().iterator();
+    	while(i.hasNext()){
+    		int nodeIndex=((Integer)i.next()).intValue();
+    		int[] adjs=getNeighborArray(currentNetwork,nodeIndex);
+    		for(int j=0;j<adjs.length;j++)
+    			if(alNodes.contains(new Integer(adjs[j])))
+    					inDegree++;
+    		alNodes.add(new Integer(nodeIndex));
+    		NodeInfo node=(NodeInfo)curNodeInfos.get(new Integer(nodeIndex));
+    		node.setComplex(c1.getComplexID());
+    	}
+    	c1.setInDegree(inDegree);
+    	c1.setTotalDegree(totalDegree);
+    	int outDegree=totalDegree-2*inDegree;
+    	if(outDegree<0)
+    		System.err.println("Error outDegree!");
+    	float fModule = (float)inDegree/(float)(outDegree);
+    	if( fModule>params.getFThreshold() )
+    		c1.setModule(true);
+    	c2.getALNodes().clear();
+    }
+    /**
+     * merge two unoverlapped complexes ,strong definition
+     */
+    protected void mergeComplexes2(Cluster c1,Cluster c2){
+    	ArrayList alNodes=c1.getALNodes();
+    	Iterator i=c2.getALNodes().iterator();
+    	while(i.hasNext()){
+    		int nodeIndex=((Integer)i.next()).intValue();
+    		NodeInfo node=(NodeInfo)curNodeInfos.get(new Integer(nodeIndex));
+    		node.setComplex(c1.getComplexID());
+    		alNodes.add(new Integer(nodeIndex));
+    	}
+    	c2.getALNodes().clear();
+    	i=alNodes.iterator();
+    	c1.setModule(true);
+    	int nodeInDegree,nodeTotalDegree;
+    	while(i.hasNext()){
+    		int nodeIndex=((Integer)i.next()).intValue();
+    		int[] adjs=getNeighborArray(currentNetwork,nodeIndex);
+    		nodeInDegree=0;
+    		for(int j=0;j<adjs.length;j++)
+    			if(alNodes.contains(new Integer(adjs[j])))
+    					nodeInDegree++;
+    		nodeTotalDegree=currentNetwork.getDegree(nodeIndex);
+        	double fModule = (double)nodeInDegree/(double)(nodeTotalDegree);
+    		if(fModule<0.5)
+    			c1.setModule(false);
+    	}
+    }
+    /**
+     * merge overlapped complexes with weak module definition
+     */
+    protected void mergeComplexes3(Cluster c1, Cluster c2){
+    	ArrayList nodes1=c1.getALNodes();
+    	ArrayList nodes2=c2.getALNodes();
+    	//add the unoverlapped nodes and set the subComplexes of all nodes in C2
+    	NodeInfo nodeNI;
+    	ArrayList subComplexes;
+    	for(Iterator it=nodes2.iterator();it.hasNext();){//for each node in C2
+    		Integer node=(Integer)it.next();
+    		nodeNI=(NodeInfo)curNodeInfos.get(node);
+    		subComplexes=nodeNI.getAlComplex();
+    		if(!nodes1.contains(node)){//this is not a overlapped node
+        		int index=subComplexes.indexOf(new Integer(c2.getComplexID()));
+        		subComplexes.remove(index);
+        		subComplexes.add(new Integer(c1.getComplexID()));
+    			nodes1.add(node);
+    		}
+    		else{	//this node already exists in C1
+        		int index=subComplexes.indexOf(new Integer(c2.getComplexID()));
+        		subComplexes.remove(index);
+    		}
+    	}
+    	//calculate the other informations for C1
+    	int inDegree=0;
+    	int totalDegree=0;
+    	for(Iterator it=nodes1.iterator();it.hasNext();){//for each node in merged C1
+    		int node=((Integer)it.next()).intValue();
+    		totalDegree+=currentNetwork.getDegree(node);//can this be useful?
+    		int[] neighbors=getNeighborArray(currentNetwork,node);
+    		for(int i=0;i<neighbors.length;i++)
+    			if(nodes1.contains(new Integer(neighbors[i])))
+    				inDegree++;
+    	}
+    	int outDegree=totalDegree-inDegree;
+    	inDegree=inDegree/2;
+    	c1.setInDegree(inDegree);
+    	c1.setTotalDegree(totalDegree);
+    	double fModule = (double)inDegree/(double)outDegree;
+    	if(fModule>params.getFThreshold())
+    		c1.setModule(true);
+    	//clear the content of nodes2
+    	nodes2.clear();
+    }
+    /**
+     * merge overlapped complexes using strong module definition
+     */
+    protected void mergeComplexes4(Cluster c1, Cluster c2){
+    	ArrayList nodes1=c1.getALNodes();
+    	ArrayList nodes2=c2.getALNodes();
+    	//add the unoverlapped nodes and set the subComplexes of all nodes in C2
+    	NodeInfo nodeNI;
+    	ArrayList subComplexes;
+    	for(Iterator it=nodes2.iterator();it.hasNext();){//for each node in C2
+    		Integer node=(Integer)it.next();
+    		nodeNI=(NodeInfo)curNodeInfos.get(node);
+    		subComplexes=nodeNI.getAlComplex();
+    		if(!nodes1.contains(node)){//this is not a overlapped node
+        		int index=subComplexes.indexOf(new Integer(c2.getComplexID()));
+        		subComplexes.remove(index);
+        		subComplexes.add(new Integer(c1.getComplexID()));
+    			nodes1.add(node);
+    		}
+    		else{	//this node already exists in C1
+        		int index=subComplexes.indexOf(new Integer(c2.getComplexID()));
+        		subComplexes.remove(index);
+    		}
+    	}
+    	c1.setModule(true);
+    	int nodeInDegree,nodeTotalDegree;
+    	for(Iterator i=nodes1.iterator();i.hasNext();){
+    		int nodeIndex=((Integer)i.next()).intValue();
+    		int[] adjs=getNeighborArray(currentNetwork,nodeIndex);
+    		nodeInDegree=0;
+    		for(int j=0;j<adjs.length;j++)
+    			if(nodes1.contains(new Integer(adjs[j])))
+    					nodeInDegree++;
+    		nodeTotalDegree=currentNetwork.getDegree(nodeIndex);
+        	float fModule = (float)nodeInDegree/(float)(nodeTotalDegree);
+    		if(fModule<0.5){
+    			c1.setModule(false);
+    		}
+    	}
+    	//clear the content of nodes2
+    	nodes2.clear();
+    }
 
 }
