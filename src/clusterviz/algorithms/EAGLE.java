@@ -238,4 +238,9 @@ public class EAGLE extends Algorithm{
     	complexes.remove(index2);
     }
 
+	public Cluster[] run(CyNetwork inputNetwork, String resultTitle){
+		getMaximalCliques(inputNetwork, resultTitle);
+		return EAGLEFinder(inputNetwork, resultTitle);
+	}
+
 }

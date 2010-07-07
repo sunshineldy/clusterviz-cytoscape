@@ -395,4 +395,49 @@ public class FAGEC extends Algorithm{
     	nodes2.clear();
     }
 
+
+	/**
+     * EAGLE Step1 and FEA-EC Step2(optional) get Maximal Cliques: 
+     * get all the maximal cliques in the network
+     * @param inputNetwork the operated network
+     */
+    public void getMaximalCliques(CyNetwork inputNetwork,String resultTitle){
+        String callerID = "Algorithm.getMaximalCliques";
+        long startTime=System.currentTimeMillis();
+        if (inputNetwork == null) {
+            System.err.println("In " + callerID + ": inputNetwork was null.");
+            return;
+        }
+    	currentNetwork=inputNetwork;
+    	params=getParams();
+
+		String net=inputNetwork.getIdentifier();
+    	if(!maximalCliquesNetworkMap.containsKey(inputNetwork.getIdentifier())){
+    		System.out.println("Get MaximalCliques for This Network........");
+            long msTimeBefore = System.currentTimeMillis();
+    		HashMap cliques = new HashMap();
+    		
+        	//initialize states
+    		Vector alCur=new Vector();
+    		Vector alFini=new Vector();
+    		Vector alNodes=new Vector(inputNetwork.getNodeCount());
+    		for(Iterator i=inputNetwork.nodesIterator();i.hasNext();){
+    			Integer node=new Integer(((Node)i.next()).getRootGraphIndex());
+    			alNodes.add(node);
+    		}    		
+    		//The critical internal process
+    		expand(cliques,alCur,alNodes,alFini);
+    		
+    		curCliques=cliques;
+    		maximalCliquesNetworkMap.put(net, cliques);
+    		findCliquesTime=System.currentTimeMillis()-msTimeBefore;
+    	}
+    	else
+    		curCliques=(HashMap)maximalCliquesNetworkMap.get(net);
+    	findCliquesTime=System.currentTimeMillis()-startTime;
+    }
+
+	public Cluster[] run(CyNetwork inputNetwork, String resultTitle){
+		return null;
+	}
 }
