@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import cytoscape.Cytoscape;
 
+import clusterviz.algorithms.*;
+
 /**
  * the set of all the parameters used in clustering
  */
@@ -27,6 +29,7 @@ public class ParameterSet {
     public static String EAGLE = "EAGLE";
     public static String FAGEC = "FAG-EC";
     private String algorithm;
+	Algorithm alg;
     //parameters used in MCODE
     //used in scoring stage
     private boolean includeLoops;
@@ -359,8 +362,24 @@ public class ParameterSet {
         return this.algorithm;
     }
 
+	/**
+	 * Get algorithm instance
+	 */
+	public Algorithm getAlg(){
+		return this.alg;
+	}
+
     public void setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
+		if(this.algorithm.equals(ParameterSet.MCODE)){
+			this.alg = new Algorithm(null);
+		}if(this.algorithm.equals(ParameterSet.FAGEC)){
+			this.alg = new FAGEC(null);
+		}if(this.algorithm.equals(ParameterSet.EAGLE)){
+			this.alg = new EAGLE(null);
+		}else{
+			;
+		}
     }
 
     public Integer[] getSelectedNodes() {
