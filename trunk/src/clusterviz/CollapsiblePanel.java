@@ -48,7 +48,7 @@ public class CollapsiblePanel extends JPanel {
     public CollapsiblePanel(String text) {
         arrow.setText(text);
         titleComponent = arrow;
-        collapsed = true;
+        collapsed = false;
         commonConstructor();
     }
     /**
