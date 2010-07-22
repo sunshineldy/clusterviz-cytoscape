@@ -49,7 +49,7 @@
 	<!--  Target to compile all PlugIn Code for release -->
   	<target name="compile" depends="prepare"
  		description="Compiles iall PlugIn source code (Note: Expects to run from clusterviz directory).">
-   		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" target="1.5" compiler="modern" source="1.5">
+   		<javac srcdir="${src.dir}" destdir="${build.classes}" deprecation="yes" target="1.5" compiler="modern" source="1.5" debug="on">
 			<include name="**"/>
             <classpath refid="classpath"/>
 		</javac>

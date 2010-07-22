@@ -15,6 +15,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
+import clusterviz.algorithmPanels.*;
+
 public class MainPanel extends JPanel {
     ParameterSet currentParameters; // store panel fields
     ClusterPlugin.MainPanelAction trigger;
@@ -26,8 +28,8 @@ public class MainPanel extends JPanel {
     JPanel clusteringContent;
     JPanel customizeClusteringContent;
     JPanel option1;
-    JPanel option2;
-    JPanel option3;
+	EAGLEpanel EAGLE;
+	FAGECPanel FAGEC;
     JPanel weakPanel;
     JPanel cliqueSizePanel;
 
@@ -40,16 +42,6 @@ public class MainPanel extends JPanel {
     JFormattedTextField nodeScoreThreshold;
     JRadioButton optimize;
     JRadioButton customize;
-    //EAGLE
-    JFormattedTextField cliqueSizeThreshold1;
-    JFormattedTextField complexSizeThreshold1;
-    //FAG-EC
-    JCheckBox overlapped;
-    JFormattedTextField fThreshold;
-    JFormattedTextField cliqueSizeThreshold;
-    JFormattedTextField complexSizeThreshold;
-    JRadioButton weak; // use weak module definition
-    JRadioButton strong; // use strong module definition
 
     JCheckBox haircut;
     JCheckBox fluff;
@@ -83,7 +75,7 @@ public class MainPanel extends JPanel {
 
         clusteringPanel.getContentPane().remove(clusteringContent);
         clusteringPanel.getContentPane().add(customizeClusteringContent, BorderLayout.NORTH);
-}
+	}
 
     /**
      * Creates a JPanel containing scope radio buttons
@@ -115,43 +107,41 @@ public class MainPanel extends JPanel {
     	JPanel choicePanel = new JPanel();
         choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.Y_AXIS));
         
-        JRadioButton algorithm1 = new JRadioButton("MCODE", currentParameters.getAlgorithm().equals(ParameterSet.MCODE)){
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }};
-        JRadioButton algorithm2 = new JRadioButton("EAGLE", currentParameters.getAlgorithm().equals(ParameterSet.EAGLE));
-        JRadioButton algorithm3 = new JRadioButton("FAG-EC", currentParameters.getAlgorithm().equals(ParameterSet.FAGEC));
+        JRadioButton algorithm1 = new JRadioButton("MCODE", currentParameters.getAlgorithm().equals(ParameterSet.MCODE));
+		JRadioButton EAGLEButton = new JRadioButton("EAGLE", currentParameters.getAlgorithm().equals(ParameterSet.EAGLE));
+        JRadioButton FAGECButton = new JRadioButton("FAG-EC", currentParameters.getAlgorithm().equals(ParameterSet.FAGEC));
         algorithm1.setToolTipText("Use K-Core-based MCODE algorithm.\nA K-Core is a subgraph with minimum degree of k");
-        algorithm2.setToolTipText("Use maximal clique-based EAGLE algorithm.\n Overlapped clusters can be identified");
-        algorithm3.setToolTipText("Use fast hierarchical agglomerative FAG-EC algorithm");
+        EAGLEButton.setToolTipText("Use maximal clique-based EAGLE algorithm.\n Overlapped clusters can be identified");
+        FAGECButton.setToolTipText("Use fast hierarchical agglomerative FAG-EC algorithm");
     
         algorithm1.setActionCommand(ParameterSet.MCODE);
-        algorithm2.setActionCommand(ParameterSet.EAGLE);
-        algorithm3.setActionCommand(ParameterSet.FAGEC);
+        EAGLEButton.setActionCommand(ParameterSet.EAGLE);
+        FAGECButton.setActionCommand(ParameterSet.FAGEC);
         algorithm1.addActionListener(new AlgorithmAction());
-        algorithm2.addActionListener(new AlgorithmAction());
-        algorithm3.addActionListener(new AlgorithmAction());
+        EAGLEButton.addActionListener(new AlgorithmAction());
+        FAGECButton.addActionListener(new AlgorithmAction());
 
         ButtonGroup algorithmOptions = new ButtonGroup();
         algorithmOptions.add(algorithm1);
-        algorithmOptions.add(algorithm2);
-        algorithmOptions.add(algorithm3);
-        choicePanel.add(algorithm3);
+        algorithmOptions.add(EAGLEButton);
+        algorithmOptions.add(FAGECButton);
+        choicePanel.add(FAGECButton);
         choicePanel.add(algorithm1);
-        choicePanel.add(algorithm2);
+        choicePanel.add(EAGLEButton);
         choicePanel.setToolTipText("Please select an algorithm");
         
         JPanel options=new JPanel();        
         options.setLayout(new BoxLayout(options,BoxLayout.Y_AXIS));
         option1=createOptionsPanel1();
         option1.setVisible(currentParameters.getAlgorithm().equals("MCODE"));
-        option2=createOptionsPanel2();
-        option2.setVisible(currentParameters.getAlgorithm().equals("EAGLE"));
-        option3=createOptionsPanel3();
-        option3.setVisible(currentParameters.getAlgorithm().equals("FAG-EC"));
+		EAGLE = new EAGLEpanel();
+        EAGLE.setVisible(currentParameters.getAlgorithm().equals("EAGLE"));
+
+		FAGEC = new FAGECPanel();
+        FAGEC.setVisible(currentParameters.getAlgorithm().equals("FAG-EC"));
         options.add(option1);
-        options.add(option2);
-        options.add(option3);
+        options.add(EAGLE);
+        options.add(FAGEC);
         
         JPanel p=new JPanel();
         p.setLayout(new BorderLayout());
@@ -185,212 +175,8 @@ public class MainPanel extends JPanel {
         retPanel.add(collapsiblePanel);
         return retPanel;
     }    
-    private JPanel createOptionsPanel2() {
-    	JPanel panel=new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder(""));
-        //the collapsible panel
-        CollapsiblePanel collapsiblePanel = new CollapsiblePanel("EAGLE Options");
-        JPanel cliqueSizePanel1=createCliqueSizePanel1();
-        JPanel complexSizePanel1=createComplexSizePanel1();
-        collapsiblePanel.getContentPane().add(cliqueSizePanel1, BorderLayout.NORTH);
-        collapsiblePanel.getContentPane().add(complexSizePanel1, BorderLayout.CENTER);
-        collapsiblePanel.setToolTipText("Customize parameters for EAGLE (Optional)");
-        panel.add(collapsiblePanel);
-        return panel;
-    }
 
-    private JPanel createOptionsPanel3() {
-    	JPanel retPanel=new JPanel();
-        retPanel.setLayout(new BorderLayout());
-        retPanel.setBorder(BorderFactory.createTitledBorder(""));
-        
-        //the collapsible panel
-        CollapsiblePanel collapsiblePanel = new CollapsiblePanel("FAG-EC Options");
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder("")); 
-        
-        //the radio botton panel
-        JPanel functionPanel=new JPanel();
-        functionPanel.setLayout(new BorderLayout());
-        //the radio bottons
-        weak = new JRadioButton("weak",true);
-        weak.setToolTipText("use weak module definition");
-        strong = new JRadioButton("strong", false);
-        strong.setToolTipText("use strong module definition");
-        ButtonGroup choices = new ButtonGroup();
-        choices.add(weak);
-        choices.add(strong);
-        weak.addActionListener(new FunctionAction());
-        strong.addActionListener(new FunctionAction());
-        functionPanel.add(weak,BorderLayout.WEST);
-        functionPanel.add(strong,BorderLayout.CENTER);        
-        
-        //the weak module definition parameter input Panel
-        weakPanel = new JPanel();
-        weakPanel.setLayout(new BorderLayout());
-        //the label
-        JLabel label=new JLabel("   threshold");  //Clique Size Threshold input
-        fThreshold = new JFormattedTextField(decimal) {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        //the input text field
-        fThreshold.setColumns(3);
-        fThreshold.addPropertyChangeListener("value", new MainPanel.FormattedTextFieldAction());
-        String tip2 = "threshold to define a module\n" +
-                "It stands for the proportion of\n"+
-                "the indegree to the outdegree of a clique";
-        fThreshold.setToolTipText(tip2);
-        fThreshold.setText((new Double(currentParameters.getFThreshold()).toString()));
-        weakPanel.add(fThreshold,BorderLayout.EAST); 
-        weakPanel.add(label,BorderLayout.WEST);  
-        weakPanel.setVisible(true);
-        
-        //the cliqueSize Panel
-        cliqueSizePanel=createCliqueSizePanel();
-        //the ComplexSize Panel
-        JPanel complexSizePanel=createComplexSizePanel();
-        
-        //Produce Overlapped Complexes input
-        JLabel overlapLabel = new JLabel(" Produce Overlapped Complexes");
-        overlapped = new JCheckBox() {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        overlapped.addItemListener(new overlappedCheckBoxAction());
-        String overlapTip = "Produce overlapped module.";
-        overlapped.setToolTipText(overlapTip);
-        overlapped.setSelected(currentParameters.isOverlapped());
-        JPanel overlapPanel = new JPanel() {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        overlapPanel.setLayout(new BorderLayout());
-        overlapPanel.setToolTipText(overlapTip);
-        overlapPanel.add(overlapLabel, BorderLayout.WEST);
-        overlapPanel.add(overlapped, BorderLayout.EAST);
- 
-        panel.add(functionPanel);
-        panel.add(weakPanel);  
-        panel.add(complexSizePanel);
-        panel.add(overlapPanel);      
-        panel.add(cliqueSizePanel);
-        cliqueSizePanel.setVisible(currentParameters.isOverlapped());
-        collapsiblePanel.getContentPane().add(panel, BorderLayout.NORTH);
-        collapsiblePanel.setToolTipText("Customize parameters for FAG-EC (Optional)");
-        retPanel.add(collapsiblePanel);
-        return retPanel;
-    }
 
-    private JPanel createComplexSizePanel1(){
-        JPanel panel=new JPanel();
-        panel.setLayout(new BorderLayout());        
-        //the label
-        JLabel sizeThresholdLabel2=new JLabel(" ComplexSize Threshold");  //Clique Size Threshold input
-        //the input text field
-        complexSizeThreshold1= new JFormattedTextField(decimal) {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        complexSizeThreshold1.setColumns(3);
-        complexSizeThreshold1.addPropertyChangeListener("value", new MainPanel.FormattedTextFieldAction());
-        String tip3 = "size cutoff of modules to be outputed\n" +
-                "modules smaller than this will be filtered";
-        complexSizeThreshold1.setToolTipText(tip3);
-        complexSizeThreshold1.setText((new Integer(currentParameters.getComplexSizeThreshold1()).toString()));
-        panel.add(sizeThresholdLabel2,BorderLayout.WEST);
-        panel.add(complexSizeThreshold1,BorderLayout.EAST);
-        return panel;
-    }
-    private JPanel createCliqueSizePanel1(){
-    	JPanel panel;
-        //the label
-        JLabel sizeThresholdLabel=new JLabel(" CliqueSize Threshold");  //Clique Size Threshold input
-        cliqueSizeThreshold1 = new JFormattedTextField(decimal) {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        //the input text field
-        cliqueSizeThreshold1.setColumns(3);
-        cliqueSizeThreshold1.addPropertyChangeListener("value", new MainPanel.FormattedTextFieldAction());
-        String tip = "size cutoff of maximal clique\n" +
-                "maximal cliques smaller than this will be\n" +
-                "regarded as subordinate and filtered\n"+
-                "the value is recommended to be set 2~5";
-        cliqueSizeThreshold1.setToolTipText(tip);
-        cliqueSizeThreshold1.setText((new Integer(currentParameters.getCliqueSizeThreshold1()).toString()));
-        //the panel 
-        panel = new JPanel() {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        //add the components to the panel
-        panel.setLayout(new BorderLayout());
-        panel.setToolTipText(tip);
-        panel.add(sizeThresholdLabel, BorderLayout.WEST);
-        panel.add(cliqueSizeThreshold1, BorderLayout.EAST);
-    	return panel;
-    }
-    private JPanel createComplexSizePanel(){
-        JPanel panel=new JPanel();
-        panel.setLayout(new BorderLayout());        
-        //the label
-        JLabel sizeThresholdLabel2=new JLabel(" ComplexSize Threshold");  //Clique Size Threshold input
-        //the input text field
-        complexSizeThreshold = new JFormattedTextField(decimal) {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        complexSizeThreshold.setColumns(3);
-        complexSizeThreshold.addPropertyChangeListener("value", new MainPanel.FormattedTextFieldAction());
-        String tip3 = "size cutoff of modules to be outputed\n" +
-        		"modules smaller than this will be filtered";
-        complexSizeThreshold.setToolTipText(tip3);
-        complexSizeThreshold.setText((new Integer(currentParameters.getComplexSizeThreshold()).toString()));
-        panel.add(sizeThresholdLabel2,BorderLayout.WEST);
-        panel.add(complexSizeThreshold,BorderLayout.EAST);
-        return panel;
-    }
-    private JPanel createCliqueSizePanel(){
-    	JPanel panel;
-        //the label
-        JLabel sizeThresholdLabel=new JLabel(" CliqueSize Threshold");  //Clique Size Threshold input
-        cliqueSizeThreshold = new JFormattedTextField(decimal) {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        //the input text field
-        cliqueSizeThreshold.setColumns(3);
-        cliqueSizeThreshold.addPropertyChangeListener("value", new MainPanel.FormattedTextFieldAction());
-        String tip = "size cutoff of maximal clique\n" +
-        		"maximal cliques smaller than this will be\n" +
-        		"regarded as subordinate and filtered\n"+
-        		"the value is recommended to be set 2~5";
-        cliqueSizeThreshold.setToolTipText(tip);
-        cliqueSizeThreshold.setText((new Integer(currentParameters.getCliqueSizeThreshold()).toString()));
-        //the panel 
-        panel = new JPanel() {
-            public JToolTip createToolTip() {
-                return new MyTipTool();
-            }
-        };
-        //add the components to the panel
-        panel.setLayout(new BorderLayout());
-        panel.setToolTipText(tip);
-        panel.add(sizeThresholdLabel, BorderLayout.WEST);
-        panel.add(cliqueSizeThreshold, BorderLayout.EAST);
-    	return panel;
-    }
     
     /**
      * Create a collapsible panel that holds network scoring parameter inputs
@@ -709,22 +495,11 @@ public class MainPanel extends JPanel {
             String algorithm = e.getActionCommand();
             currentParameters.setAlgorithm(algorithm);
             option1.setVisible(currentParameters.getAlgorithm().equals(ParameterSet.MCODE));
-            option2.setVisible(currentParameters.getAlgorithm().equals(ParameterSet.EAGLE));
-            option3.setVisible(currentParameters.getAlgorithm().equals(ParameterSet.FAGEC));
+            EAGLE.setVisible(currentParameters.getAlgorithm().equals(ParameterSet.EAGLE));
+            FAGEC.setVisible(currentParameters.getAlgorithm().equals(ParameterSet.FAGEC));
         }
     }
 
-    private class FunctionAction extends AbstractAction {
-        public void actionPerformed(ActionEvent e) {
-            if (weak.isSelected()) {
-                currentParameters.setWeak(true);
-                weakPanel.setVisible(true);
-            } else {
-                currentParameters.setWeak(false);
-                weakPanel.setVisible(false);
-            }
-        }
-    }
     /**
     /**
      * Sets the optimization parameter depending on which radio button is selected (cusomize/optimize)
@@ -794,20 +569,6 @@ public class MainPanel extends JPanel {
     }
 
     /**
-     * Handles setting of the produce-overlapped-complexes parameter
-     */
-    private class overlappedCheckBoxAction implements ItemListener {
-        public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                currentParameters.setOverlapped(true);
-                cliqueSizePanel.setVisible(true);
-            } else {
-                currentParameters.setOverlapped(false);
-                cliqueSizePanel.setVisible(false);
-            }
-        }
-    }
-    /**
      * Handles setting for the text field parameters that are numbers.
      * Makes sure that the numbers make sense.
      */
@@ -863,58 +624,8 @@ public class MainPanel extends JPanel {
                     		"be set between 0 and 1.";
                     invalid = true;
                 }
-            }else if (source == cliqueSizeThreshold1) {
-                Number value = (Number) cliqueSizeThreshold1.getValue();
-                if ((value != null) && (value.intValue() >= 0) && (value.intValue() <= 10)) {
-                    currentParameters.setCliqueSizeThreshold1(value.intValue());
-                } else {
-                    source.setValue(new Double (currentParameters.getCliqueSizeThreshold1()));
-                    message +=  "clique size cutoff should\n" +
-            				"be set between 0 and 10.";
-                    invalid = true;
-                }
-            }else if (source == cliqueSizeThreshold) {
-                Number value = (Number) cliqueSizeThreshold.getValue();
-                if ((value != null) && (value.intValue() >= 0) && (value.intValue() <= 10)) {
-                    currentParameters.setCliqueSizeThreshold(value.intValue());
-                } else {
-                    source.setValue(new Double (currentParameters.getCliqueSizeThreshold()));
-                    message += "clique size cutoff should\n" +
-    						"be set between 0 and 10.";
-                    invalid = true;
-                }
-            }else if (source == fThreshold) {
-                Number value = (Number) fThreshold.getValue();
-                if ((value != null) && (value.doubleValue() >= 1.0) && (value.doubleValue() <= 10.0)) {
-                    currentParameters.setFThreshold(value.doubleValue());
-                } else {
-                    source.setValue(new Double (currentParameters.getFThreshold()));
-                    message += "module threshold should\n" +
-    						"be set between 1 and 10.";
-                    invalid = true;
-                }
-            }else if (source == complexSizeThreshold1) {
-                Number value = (Number) complexSizeThreshold1.getValue();
-                if ((value != null) && (value.intValue() >= 0)) {
-                    currentParameters.setComplexSizeThreshold1(value.intValue());
-                } else {
-                    source.setValue(new Double (currentParameters.getComplexSizeThreshold1()));
-                    message += "size of output module cutoff should\n" +
-    						"be greater than 0.";
-                    invalid = true;
-                }
-            }else if (source == complexSizeThreshold) {
-                Number value = (Number) complexSizeThreshold.getValue();
-                if ((value != null) && (value.intValue() >= 0)) {
-                    currentParameters.setComplexSizeThreshold(value.intValue());
-                } else {
-                    source.setValue(new Double (currentParameters.getComplexSizeThreshold()));
-                    message += "size of output module cutoff should\n" +
-						"be greater than 0.";
-                    invalid = true;
-                }
             }
-            if (invalid) {
+			if (invalid) {
                 JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "paramter out of boundary", JOptionPane.WARNING_MESSAGE);
             }
         }
