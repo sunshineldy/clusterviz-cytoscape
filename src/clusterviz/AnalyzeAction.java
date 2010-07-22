@@ -1,6 +1,7 @@
 package clusterviz;
 
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -10,6 +11,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.data.CyAttributes;
 import giny.model.Node;
 
 import javax.swing.*;
@@ -22,6 +24,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import clusterviz.algorithms.*;
 
@@ -95,13 +99,13 @@ public class AnalyzeAction implements ActionListener {
         Algorithm alg;
         boolean newNet=false;
         String halfResultTitle = "Result ";
-        if (!networkManager.containsKey(network.getIdentifier())){
+        //if (!networkManager.containsKey(network.getIdentifier())){
         	newNet=true;
 			alg = curParams.getAlg();
             //alg = new Algorithm(null);
             networkManager.put(network.getIdentifier(), alg);
-        }
-        else alg = (Algorithm) networkManager.get(network.getIdentifier());
+        //}
+        //else alg = (Algorithm) networkManager.get(network.getIdentifier());
         //check the validation the input parameters
         analyze=checkParams(curParams, newNet); 
         
@@ -384,10 +388,10 @@ public class AnalyzeAction implements ActionListener {
                     taskMonitor.setException(e, "Clustering cancelled!");
                 }
             }
-            /*else if(which.equals(ParameterSet.FAGEC)){
+            else if(which.equals(ParameterSet.FAGEC)){
                 try {
                     alg.setTaskMonitor(taskMonitor, network.getIdentifier());
-                    if (analyze == FINDCLIQUE) {
+					/*if (analyze == FINDCLIQUE) {
                         taskMonitor.setPercentCompleted(0);
                         taskMonitor.setStatus("Step 1 of 3:Calculate all the maximal Clique...");
                         alg.getMaximalCliques(network, resultTitle);
@@ -415,10 +419,10 @@ public class AnalyzeAction implements ActionListener {
                         }
                         completedSuccessfully = true;
                     }
-                    else{
+                    else{*/
                         taskMonitor.setPercentCompleted(0);
                         taskMonitor.setStatus("Step 2 of 3:Generating Complexes...");
-                        complexes = alg.FAG_ECFinder(network, resultTitle);
+                        complexes = alg.run(network, resultTitle);
                     	System.err.println("After FAG-EC.Time used:"+alg.getLastFindTime());
                         if (interrupted )
                             return;
@@ -438,14 +442,35 @@ public class AnalyzeAction implements ActionListener {
                             taskMonitor.setPercentCompleted((i * 100) / complexes.length);
                         }
                         completedSuccessfully = true;
-                    }
+                    //}
                     if (interrupted )
                         return;
                 } catch (Exception e) {
                     taskMonitor.setException(e, "Clustering cancelled!");
                 }
-            }*/
+            }
+			setClusterAttribute();
         }
+
+		private void setClusterAttribute(){
+			CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
+			int length=0;
+			for(int i=0; i < complexes.length; i++){
+				length = length + complexes[i].getGPCluster().getNodeIndicesArray().length;
+			}
+			int[] clusteredNodes;
+			clusteredNodes = new int[length];
+			int index=0;
+			for(int i=0; i < complexes.length; i++){
+				Iterator itr = complexes[i].getGPCluster().nodesIterator();
+				while(itr.hasNext()){
+					CyNode node = (CyNode) itr.next();
+					System.out.println(node.getIdentifier());
+					cyAttributes.setAttribute(node.getIdentifier(), "Cluster", i);
+				}
+			}
+		}
+
         public boolean isCompletedSuccessfully() {
             return completedSuccessfully;
         }

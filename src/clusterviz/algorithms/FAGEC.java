@@ -438,6 +438,6 @@ public class FAGEC extends Algorithm{
     }
 
 	public Cluster[] run(CyNetwork inputNetwork, String resultTitle){
-		return null;
+ 		return(this.FAG_ECFinder(inputNetwork, resultTitle));
 	}
 }
