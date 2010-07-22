@@ -29,7 +29,7 @@ public class ParameterSet {
     public static String EAGLE = "EAGLE";
     public static String FAGEC = "FAG-EC";
     private String algorithm;
-	Algorithm alg;
+	public Algorithm alg;
     //parameters used in MCODE
     //used in scoring stage
     private boolean includeLoops;
@@ -372,7 +372,7 @@ public class ParameterSet {
     public void setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
 		if(this.algorithm.equals(ParameterSet.MCODE)){
-			this.alg = new Algorithm(null);
+			this.alg = new MCODE(null);
 		}if(this.algorithm.equals(ParameterSet.FAGEC)){
 			this.alg = new FAGEC(null);
 		}if(this.algorithm.equals(ParameterSet.EAGLE)){
